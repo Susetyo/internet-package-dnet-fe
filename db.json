@@ -4,17 +4,190 @@
       "id": "1",
       "email": "admin@mail.com",
       "password": "admin123",
-      "name": "Admin"
+      "name": "Admin DNET",
+      "role": "admin"
     }
   ],
-  "customers": [],
+  "customers": [
+    {
+      "id": "c-001",
+      "name": "Budi Santoso",
+      "phone": "0812-4455-9011",
+      "email": "budi.santoso@mail.com",
+      "segment": "Gold",
+      "status": "active"
+    },
+    {
+      "id": "c-002",
+      "name": "Nadia Putri",
+      "phone": "0821-7788-3400",
+      "email": "nadia.putri@mail.com",
+      "segment": "Silver",
+      "status": "active"
+    },
+    {
+      "id": "c-003",
+      "name": "CV Lintas Media",
+      "phone": "021-7788-2211",
+      "email": "billing@lintasmedia.co.id",
+      "segment": "Platinum",
+      "status": "active"
+    },
+    {
+      "id": "c-004",
+      "name": "Rangga Pratama",
+      "phone": "0878-1122-9090",
+      "email": "rangga.pratama@mail.com",
+      "segment": "Gold",
+      "status": "inactive"
+    },
+    {
+      "id": "c-005",
+      "name": "Sari Wulandari",
+      "phone": "0857-2211-3344",
+      "email": "sari.wulandari@mail.com",
+      "segment": "Silver",
+      "status": "active"
+    },
+    {
+      "id": "c-006",
+      "name": "PT Nusantara Digital",
+      "phone": "021-9090-8833",
+      "email": "finance@nusantaradigital.id",
+      "segment": "Platinum",
+      "status": "active"
+    }
+  ],
   "internetPackages": [
     {
-      "id": "1",
-      "name": "Internet 10GB",
-      "price": 50000,
-      "validityDays": 30
+      "id": "p-001",
+      "name": "Home Fiber 30 Mbps",
+      "quotaGb": 0,
+      "validityDays": 30,
+      "price": 249000,
+      "provider": "DNET Fiber"
+    },
+    {
+      "id": "p-002",
+      "name": "Home Fiber 50 Mbps",
+      "quotaGb": 0,
+      "validityDays": 30,
+      "price": 349000,
+      "provider": "DNET Fiber"
+    },
+    {
+      "id": "p-003",
+      "name": "Data Booster 25 GB",
+      "quotaGb": 25,
+      "validityDays": 30,
+      "price": 55000,
+      "provider": "DNET Mobile"
+    },
+    {
+      "id": "p-004",
+      "name": "Data Booster 50 GB",
+      "quotaGb": 50,
+      "validityDays": 30,
+      "price": 89000,
+      "provider": "DNET Mobile"
+    },
+    {
+      "id": "p-005",
+      "name": "Business 100 Mbps",
+      "quotaGb": 0,
+      "validityDays": 30,
+      "price": 699000,
+      "provider": "DNET Business"
+    },
+    {
+      "id": "p-006",
+      "name": "Speed Boost 1 Hari",
+      "quotaGb": 0,
+      "validityDays": 1,
+      "price": 25000,
+      "provider": "DNET Add-on"
     }
   ],
-  "transactions": []
+  "transactions": [
+    {
+      "id": "trx-250508-001",
+      "customerId": "c-001",
+      "packageId": "p-001",
+      "paymentMethod": "QRIS",
+      "status": "success",
+      "createdAt": "2026-05-08T09:15:00.000Z"
+    },
+    {
+      "id": "trx-250508-002",
+      "customerId": "c-002",
+      "packageId": "p-004",
+      "paymentMethod": "E-Wallet",
+      "status": "pending",
+      "createdAt": "2026-05-08T10:40:00.000Z"
+    },
+    {
+      "id": "trx-250507-001",
+      "customerId": "c-003",
+      "packageId": "p-005",
+      "paymentMethod": "Virtual Account",
+      "status": "success",
+      "createdAt": "2026-05-07T14:20:00.000Z"
+    },
+    {
+      "id": "trx-250506-001",
+      "customerId": "c-005",
+      "packageId": "p-003",
+      "paymentMethod": "QRIS",
+      "status": "success",
+      "createdAt": "2026-05-06T08:05:00.000Z"
+    },
+    {
+      "id": "trx-250505-001",
+      "customerId": "c-004",
+      "packageId": "p-002",
+      "paymentMethod": "Virtual Account",
+      "status": "failed",
+      "createdAt": "2026-05-05T16:45:00.000Z"
+    },
+    {
+      "id": "trx-250504-001",
+      "customerId": "c-006",
+      "packageId": "p-005",
+      "paymentMethod": "Virtual Account",
+      "status": "success",
+      "createdAt": "2026-05-04T11:10:00.000Z"
+    },
+    {
+      "id": "trx-250503-001",
+      "customerId": "c-001",
+      "packageId": "p-006",
+      "paymentMethod": "E-Wallet",
+      "status": "success",
+      "createdAt": "2026-05-03T07:30:00.000Z"
+    },
+    {
+      "id": "trx-250502-001",
+      "customerId": "c-002",
+      "packageId": "p-003",
+      "paymentMethod": "QRIS",
+      "status": "pending",
+      "createdAt": "2026-05-02T13:25:00.000Z"
+    },
+    {
+      "id": "trx-250430-001",
+      "customerId": "c-003",
+      "packageId": "p-002",
+      "paymentMethod": "Virtual Account",
+      "status": "success",
+      "createdAt": "2026-04-30T15:00:00.000Z"
+    },
+    {
+      "id": "trx-250428-001",
+      "customerId": "c-005",
+      "packageId": "p-004",
+      "paymentMethod": "E-Wallet",
+      "status": "failed",
+      "createdAt": "2026-04-28T12:12:00.000Z"
+    }
+  ]
 }

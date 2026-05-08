@@ -1,4 +1,6 @@
 import {
+    AccountBalanceWalletRounded,
+    ArticleRounded,
     DashboardRounded,
     HistoryRounded,
     LogoutRounded,
@@ -31,6 +33,8 @@ const menuItems = [
     { label: "Dashboard", icon: <DashboardRounded /> },
     { label: "Beli Paket", icon: <WifiRounded /> },
     { label: "Transaksi", icon: <ReceiptLongRounded /> },
+    { label: "Saldo", icon: <AccountBalanceWalletRounded /> },
+    { label: "Artikel", icon: <ArticleRounded /> },
     { label: "Riwayat", icon: <HistoryRounded /> },
 ];
 
@@ -56,92 +60,86 @@ export function DashboardLayout() {
                     borderBottom: "1px solid rgba(255,255,255,0.08)",
                 }}
             >
-                <Toolbar sx={{ minHeight: 70, px: { xs: 0 } }}>
-                    <Container
-                        maxWidth="xl"
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            gap: 2,
-                            width: "100%",
-                        }}
+                <Toolbar sx={{ gap: 2, minHeight: 70 }}>
+                    <IconButton
+                        sx={{ display: { md: "none" }, color: "#fff" }}
+                        aria-label="menu"
                     >
-                        <IconButton
-                            sx={{ display: { md: "none" }, color: "#fff" }}
-                            aria-label="menu"
-                        >
-                            <MenuRounded />
-                        </IconButton>
+                        <MenuRounded />
+                    </IconButton>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
                         <Box
                             sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1.25,
-                                minWidth: { md: 260 },
+                                width: 36,
+                                height: 36,
+                                borderRadius: 2,
+                                display: "grid",
+                                placeItems: "center",
+                                bgcolor: "#fff",
+                                color: "#006bb6",
+                                fontWeight: 900,
+                                fontSize: 18,
                             }}
                         >
-                            <Box
-                                sx={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: 1,
-                                    display: "grid",
-                                    placeItems: "center",
-                                    bgcolor: "#fff",
-                                    color: "#006bb6",
-                                    fontWeight: 900,
-                                    fontSize: 18,
-                                }}
-                            >
-                                d~
-                            </Box>
-                            <Typography
-                                sx={{
-                                    display: { xs: "none", sm: "block" },
-                                fontSize: 20,
-                                    fontWeight: 900,
-                                    letterSpacing: 0,
-                                }}
-                            >
-                                net
-                            </Typography>
+                            d~
                         </Box>
-                        <TextField
-                            placeholder="Cari paket internet, invoice, atau nomor pelanggan"
-                            size="small"
+                        <Typography
                             sx={{
-                                flex: 1,
-                                maxWidth: 760,
-                                "& .MuiInputBase-root": {
-                                    color: "#fff",
-                                    bgcolor: "rgba(255,255,255,0.12)",
-                                    borderRadius: 1,
-                                },
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: "rgba(255,255,255,0.1)",
-                                },
-                                "& .MuiInputBase-input::placeholder": {
-                                    color: "rgba(255,255,255,0.72)",
-                                    opacity: 1,
-                                },
+                                display: { xs: "none", sm: "block" },
+                                fontSize: 22,
+                                fontWeight: 900,
+                                letterSpacing: 0,
                             }}
-                            slotProps={{
-                                input: {
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SearchRounded
-                                                sx={{ color: "#b9d6e7" }}
-                                            />
-                                        </InputAdornment>
-                                    ),
-                                },
-                            }}
-                        />
-                        <Avatar sx={{ bgcolor: "#006bb6", fontWeight: 800 }}>
-                            {user?.name?.charAt(0) ?? "U"}
-                        </Avatar>
-                    </Container>
+                        >
+                            d~net
+                        </Typography>
+                    </Box>
+                    <TextField
+                        placeholder="Cari paket internet, invoice, atau nomor pelanggan"
+                        size="small"
+                        sx={{
+                            flex: 1,
+                            maxWidth: 760,
+                            mx: { xs: 0, md: 2 },
+                            "& .MuiInputBase-root": {
+                                color: "#fff",
+                                bgcolor: "rgba(255,255,255,0.12)",
+                                borderRadius: 2,
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "rgba(255,255,255,0.1)",
+                            },
+                            "& .MuiInputBase-input::placeholder": {
+                                color: "rgba(255,255,255,0.72)",
+                                opacity: 1,
+                            },
+                        }}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchRounded sx={{ color: "#b9d6e7" }} />
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
+                    />
+                    <Button
+                        variant="contained"
+                        sx={{
+                            display: { xs: "none", md: "inline-flex" },
+                            bgcolor: "#f6c400",
+                            color: "#0f1c27",
+                            fontWeight: 800,
+                            textTransform: "none",
+                            "&:hover": { bgcolor: "#e5b600" },
+                        }}
+                    >
+                        Beli Paket
+                    </Button>
+                    <Avatar sx={{ bgcolor: "#006bb6", fontWeight: 800 }}>
+                        {user?.name?.charAt(0) ?? "U"}
+                    </Avatar>
                 </Toolbar>
             </AppBar>
 
@@ -162,7 +160,7 @@ export function DashboardLayout() {
                         sx={{
                             position: "sticky",
                             top: 96,
-                            borderRadius: 1.25,
+                            borderRadius: 3,
                             p: 1.5,
                             bgcolor: "rgba(255,255,255,0.08)",
                             border: "1px solid rgba(255,255,255,0.1)",
@@ -190,7 +188,7 @@ export function DashboardLayout() {
                                     selected={index === 0}
                                     sx={{
                                         mb: 0.75,
-                                        borderRadius: 1,
+                                        borderRadius: 2,
                                         color: "rgba(255,255,255,0.78)",
                                         "&.Mui-selected": {
                                             bgcolor: "#f6c400",
@@ -212,7 +210,7 @@ export function DashboardLayout() {
                                     <ListItemText
                                         primary={item.label}
                                         slotProps={{
-                                            primary: {
+                                        primary: {
                                                 sx: {
                                                     fontSize: 14,
                                                     fontWeight: 800,
@@ -236,7 +234,7 @@ export function DashboardLayout() {
                                 color: "#ff7f9c",
                                 textTransform: "none",
                                 fontWeight: 800,
-                                borderRadius: 1,
+                                borderRadius: 2,
                                 px: 2,
                             }}
                         >

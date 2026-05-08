@@ -45,9 +45,9 @@ export function LoginForm() {
                 minHeight: { xs: "auto", md: "100dvh" },
                 borderRadius: { xs: 4, md: 0 },
                 overflow: "hidden",
-                bgcolor: "#fff",
+                bgcolor: "transparent",
                 boxShadow: {
-                    xs: "0 28px 70px rgba(20, 20, 20, 0.14)",
+                    xs: "0 28px 70px rgba(0, 0, 0, 0.3)",
                     md: "none",
                 },
                 border: {
@@ -74,6 +74,8 @@ export function LoginForm() {
                         px: { xs: 1, sm: 5, md: 10, lg: 14 },
                         py: { xs: 4, md: 6 },
                         textAlign: "left",
+                        bgcolor: "rgba(10, 21, 32, 0.72)",
+                        backdropFilter: "blur(18px)",
                     }}
                 >
                     <Stack
@@ -96,18 +98,19 @@ export function LoginForm() {
                                     width: 9,
                                     height: 14,
                                     borderRadius: 0.75,
-                                    background:
-                                        "linear-gradient(180deg, #00a9e8 0%, #006bb6 100%)",
+                                    background: "#f6c400",
+                                    boxShadow:
+                                        "0 0 18px rgba(246, 196, 0, 0.35)",
                                 }}
                             />
                             <Typography
                                 sx={{
-                                    color: "#15131b",
+                                    color: "#fff",
                                     fontSize: 13,
                                     fontWeight: 800,
                                 }}
                             >
-                                D~net
+                                d~net
                             </Typography>
                         </Stack>
 
@@ -115,7 +118,7 @@ export function LoginForm() {
                             <Typography
                                 component="h1"
                                 sx={{
-                                    color: "#005aa8",
+                                    color: "#fff",
                                     fontSize: { xs: 36, sm: 42 },
                                     fontWeight: 800,
                                     lineHeight: 1.05,
@@ -123,20 +126,20 @@ export function LoginForm() {
                                     m: 0,
                                 }}
                             >
-                                Hello,
+                                Halo,
                                 <br />
-                                Welcome Back
+                                Selamat Datang
                             </Typography>
                             <Typography
                                 sx={{
                                     mt: 2,
-                                    color: "#8d8b94",
+                                    color: "rgba(255,255,255,0.68)",
                                     fontSize: 14,
                                     lineHeight: 1.6,
                                 }}
                             >
-                                Hey, welcome back to your account. Let’s
-                                continue where you left off
+                                Masuk ke akun untuk melanjutkan pengelolaan
+                                customer, paket internet, dan transaksi.
                             </Typography>
                         </Box>
 
@@ -173,16 +176,16 @@ export function LoginForm() {
                             name="password"
                             control={control}
                             rules={{
-                                required: "Password wajib diisi",
+                                required: "Kata sandi wajib diisi",
                                 minLength: {
                                     value: 6,
-                                    message: "Password minimal 6 karakter",
+                                    message: "Kata sandi minimal 6 karakter",
                                 },
                             }}
                             render={({ field, fieldState }) => (
                                 <TextField
                                     {...field}
-                                    placeholder="Password"
+                                    placeholder="Kata sandi"
                                     type="password"
                                     fullWidth
                                     error={!!fieldState.error}
@@ -208,18 +211,18 @@ export function LoginForm() {
                                         sx={{
                                             p: 0.25,
                                             mr: 0.75,
-                                            color: "#0079c8",
+                                            color: "#f6c400",
                                             "&.Mui-checked": {
-                                                color: "#0079c8",
+                                                color: "#f6c400",
                                             },
                                         }}
                                     />
                                 }
-                                label="Remember me"
+                                label="Ingat saya"
                                 sx={{
                                     m: 0,
                                     "& .MuiFormControlLabel-label": {
-                                        color: "#8d8b94",
+                                        color: "rgba(255,255,255,0.68)",
                                         fontSize: 12,
                                     },
                                 }}
@@ -228,12 +231,12 @@ export function LoginForm() {
                                 href="#"
                                 underline="none"
                                 sx={{
-                                    color: "#77737e",
+                                    color: "#72d8ff",
                                     fontSize: 12,
                                     fontWeight: 500,
                                 }}
                             >
-                                Forgot Password?
+                                Lupa kata sandi?
                             </Link>
                         </Stack>
 
@@ -249,29 +252,30 @@ export function LoginForm() {
                                 borderRadius: 1.25,
                                 textTransform: "none",
                                 fontWeight: 800,
-                                bgcolor: "#006fba",
+                                bgcolor: "#f6c400",
+                                color: "#102331",
                                 boxShadow:
-                                    "0 12px 22px rgba(0, 111, 186, 0.24)",
-                                "&:hover": { bgcolor: "#005a9d" },
+                                    "0 12px 22px rgba(246, 196, 0, 0.24)",
+                                "&:hover": { bgcolor: "#e5b600" },
                             }}
                         >
-                            Sign In
+                            Masuk
                         </Button>
 
                         <Typography
                             sx={{
                                 mt: { xs: 5, md: 9 },
-                                color: "#77737e",
+                                color: "rgba(255,255,255,0.68)",
                                 fontSize: 12,
                             }}
                         >
-                            Don&apos;t have an account?{" "}
+                            Belum punya akun?{" "}
                             <Link
                                 href="#"
                                 underline="none"
-                                sx={{ color: "#0079c8", fontWeight: 800 }}
+                                sx={{ color: "#72d8ff", fontWeight: 800 }}
                             >
-                                Sign Up
+                                Daftar
                             </Link>
                         </Typography>
                     </Stack>
@@ -286,23 +290,28 @@ export function LoginForm() {
 const fieldSx = {
     "& .MuiInputBase-root": {
         height: 44,
-        borderRadius: 1,
-        bgcolor: "#fff",
+        borderRadius: 1.5,
+        bgcolor: "rgba(255,255,255,0.1)",
         fontSize: 13,
-        color: "#19191f",
+        color: "#fff",
     },
     "& .MuiOutlinedInput-notchedOutline": {
-        borderColor: "#d5d3d9",
+        borderColor: "rgba(255,255,255,0.14)",
+    },
+    "& .MuiInputBase-input::placeholder": {
+        color: "rgba(255,255,255,0.55)",
+        opacity: 1,
     },
     "&:hover .MuiOutlinedInput-notchedOutline": {
-        borderColor: "#bcb8c4",
+        borderColor: "rgba(114,216,255,0.5)",
     },
     "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-        borderColor: "#0079c8",
+        borderColor: "#72d8ff",
         borderWidth: 1,
     },
     "& .MuiFormHelperText-root": {
         mx: 0,
         fontSize: 11,
+        color: "#ffb3c2",
     },
 };

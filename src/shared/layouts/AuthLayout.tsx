@@ -9,7 +9,8 @@ export function AuthLayout() {
                 display: "grid",
                 placeItems: "center",
                 p: { xs: 1.5, md: 0 },
-                bgcolor: { xs: "#d9f1fb", md: "#fff" },
+                background:
+                    "radial-gradient(circle at 16% 0%, rgba(0, 169, 232, 0.28), transparent 28%), linear-gradient(135deg, #102331 0%, #192735 42%, #1f2638 100%)",
             }}
         >
             <Container

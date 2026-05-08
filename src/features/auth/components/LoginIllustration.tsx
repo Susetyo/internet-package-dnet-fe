@@ -18,13 +18,13 @@ export function LoginIllustration() {
         >
             <defs>
                 <linearGradient id="isp-bg" x1="0" x2="1" y1="0" y2="1">
-                    <stop offset="0%" stopColor="#dff7ff" />
-                    <stop offset="45%" stopColor="#a9e2f6" />
-                    <stop offset="100%" stopColor="#0b9ed3" />
+                    <stop offset="0%" stopColor="#17384a" />
+                    <stop offset="45%" stopColor="#124259" />
+                    <stop offset="100%" stopColor="#006f9f" />
                 </linearGradient>
                 <linearGradient id="router" x1="0" x2="1" y1="0" y2="1">
-                    <stop offset="0%" stopColor="#ffffff" />
-                    <stop offset="100%" stopColor="#c8effb" />
+                    <stop offset="0%" stopColor="#f6fbff" />
+                    <stop offset="100%" stopColor="#b9eaf8" />
                 </linearGradient>
                 <filter id="soft-shadow" colorInterpolationFilters="sRGB">
                     <feDropShadow
@@ -45,8 +45,8 @@ export function LoginIllustration() {
                     <path
                         d="M 0 17 C 9 5 25 5 34 17"
                         fill="none"
-                        stroke="#49b7e4"
-                        strokeOpacity="0.35"
+                        stroke="#72d8ff"
+                        strokeOpacity="0.2"
                         strokeWidth="2"
                     />
                 </pattern>
@@ -61,19 +61,19 @@ export function LoginIllustration() {
             />
             <path
                 d="M0 704 C128 640 214 742 342 686 C482 624 565 560 760 622 L760 860 L0 860 Z"
-                fill="#ffffff"
-                opacity="0.88"
+                fill="#0d1b29"
+                opacity="0.42"
             />
             <path
                 d="M-42 172 C68 110 151 118 255 170 C363 224 458 218 562 152 C641 101 694 88 808 114"
                 fill="none"
-                stroke="#70c9eb"
-                strokeOpacity="0.45"
+                stroke="#72d8ff"
+                strokeOpacity="0.24"
                 strokeWidth="5"
             />
 
             <g filter="url(#soft-shadow)">
-                <circle cx="506" cy="326" r="204" fill="#f8fbfd" />
+                <circle cx="506" cy="326" r="204" fill="#f7fbff" />
                 <path
                     d="M326 418 A204 204 0 0 1 686 238"
                     fill="none"
@@ -109,7 +109,7 @@ export function LoginIllustration() {
                         y1={y1}
                         x2={x2}
                         y2={y2}
-                        stroke="#006bb6"
+                        stroke="#00a9e8"
                         strokeLinecap="round"
                         strokeOpacity="0.74"
                         strokeWidth="12"
@@ -160,7 +160,7 @@ export function LoginIllustration() {
 
             <g
                 fill="none"
-                stroke="#006bb6"
+                stroke="#72d8ff"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="6"
@@ -268,22 +268,22 @@ export function LoginIllustration() {
             <text
                 x="90"
                 y="130"
-                fill="#005aa8"
+                fill="#ffffff"
                 fontFamily="Inter, system-ui, sans-serif"
                 fontSize="46"
                 fontWeight="800"
             >
-                Fast Internet
+                Internet Cepat
             </text>
             <text
                 x="92"
                 y="174"
-                fill="#4f7f98"
+                fill="#b9d6e7"
                 fontFamily="Inter, system-ui, sans-serif"
                 fontSize="22"
                 fontWeight="600"
             >
-                stable connection for every device
+                koneksi stabil untuk semua perangkat
             </text>
         </Box>
     );
