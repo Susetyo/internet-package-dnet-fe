@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "admin@mail.com",
+      "password": "admin123",
+      "name": "Admin"
+    }
+  ],
+  "customers": [],
+  "internetPackages": [
+    {
+      "id": "1",
+      "name": "Internet 10GB",
+      "price": 50000,
+      "validityDays": 30
+    }
+  ],
+  "transactions": []
+}
