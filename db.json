@@ -6,30 +6,54 @@
       "password": "admin123",
       "name": "Admin DNET",
       "role": "admin"
+    },
+    {
+      "id": "2",
+      "email": "susetya@mail.com",
+      "password": "customer123",
+      "name": "Susetya Pambudi",
+      "role": "customer",
+      "customerId": "c-001"
+    },
+    {
+      "id": "3",
+      "email": "ariani@mail.com",
+      "password": "customer123",
+      "name": "Ariani Suwignyo",
+      "role": "customer",
+      "customerId": "c-002"
+    },
+    {
+      "id": "4",
+      "email": "Andy@mail.com",
+      "password": "customer123",
+      "name": "Andy Pranata",
+      "role": "customer",
+      "customerId": "c-003"
     }
   ],
   "customers": [
     {
       "id": "c-001",
-      "name": "Budi Santoso",
+      "name": "Susetya Pambudi",
       "phone": "0812-4455-9011",
-      "email": "budi.santoso@mail.com",
+      "email": "susetya@mail.com",
       "segment": "Gold",
       "status": "active"
     },
     {
       "id": "c-002",
-      "name": "Nadia Putri",
+      "name": "Ariani Suwignyo",
       "phone": "0821-7788-3400",
-      "email": "nadia.putri@mail.com",
+      "email": "ariani@mail.com",
       "segment": "Silver",
       "status": "active"
     },
     {
       "id": "c-003",
-      "name": "CV Lintas Media",
+      "name": "Andy Pranata",
       "phone": "021-7788-2211",
-      "email": "billing@lintasmedia.co.id",
+      "email": "Andy@mail.com",
       "segment": "Platinum",
       "status": "active"
     },
