@@ -37,7 +37,7 @@ export function AdminManualPaymentDialog({
 }: AdminManualPaymentDialogProps) {
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle sx={{ fontWeight: 900 }}>
+            <DialogTitle sx={{ color: "#102331", fontWeight: 900 }}>
                 Manual Pembayaran Admin
             </DialogTitle>
             {open && (

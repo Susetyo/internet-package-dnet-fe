@@ -315,7 +315,7 @@ function AdminTransactionCard({
     return (
         <Box
             sx={{
-                p: 2,
+                p: { xs: 2, md: 2.5 },
                 borderRadius: 1,
                 bgcolor: "rgba(255,255,255,0.06)",
                 border: "1px solid rgba(255,255,255,0.1)",
@@ -329,11 +329,15 @@ function AdminTransactionCard({
                     justifyContent: "space-between",
                 }}
             >
-                <Stack direction="row" spacing={1.5} sx={{ minWidth: 0 }}>
+                <Stack
+                    direction="row"
+                    spacing={{ xs: 1.5, md: 2 }}
+                    sx={{ minWidth: 0, flex: 1, alignItems: "center" }}
+                >
                     <Box
                         sx={{
-                            width: 46,
-                            height: 46,
+                            width: { xs: 46, md: 56 },
+                            height: { xs: 46, md: 56 },
                             borderRadius: 1,
                             display: "grid",
                             placeItems: "center",
@@ -357,7 +361,13 @@ function AdminTransactionCard({
                             {transaction.package?.name ?? transaction.packageId}
                         </Typography>
                         <Typography
-                            sx={{ color: "rgba(255,255,255,0.62)", mt: 0.25 }}
+                            sx={{
+                                color: "rgba(255,255,255,0.62)",
+                                mt: 0.25,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                            }}
                         >
                             {transaction.customer?.name ?? "Customer tidak ditemukan"} -{" "}
                             {transaction.id}
@@ -371,10 +381,18 @@ function AdminTransactionCard({
                     </Box>
                 </Stack>
 
-                <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    spacing={1}
-                    sx={{ width: { xs: "100%", md: "auto" } }}
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: {
+                            xs: "1fr 1fr",
+                            md: "max-content max-content",
+                        },
+                        gap: 1,
+                        alignItems: "center",
+                        justifyContent: { xs: "stretch", md: "end" },
+                        width: { xs: "100%", md: "auto" },
+                    }}
                 >
                     <TransactionStatusChip showIcon status={transaction.status} />
                     <Chip
@@ -383,6 +401,7 @@ function AdminTransactionCard({
                             bgcolor: "rgba(114,216,255,0.16)",
                             color: "#72d8ff",
                             fontWeight: 900,
+                            minWidth: { md: 150 },
                         }}
                     />
                     {transaction.status === "pending" && (
@@ -395,13 +414,15 @@ function AdminTransactionCard({
                                 color: "#102331",
                                 textTransform: "none",
                                 fontWeight: 900,
+                                gridColumn: "1 / -1",
+                                justifySelf: "stretch",
                                 "&:hover": { bgcolor: "#e5b600" },
                             }}
                         >
                             Manual Pembayaran
                         </Button>
                     )}
-                </Stack>
+                </Box>
             </Stack>
         </Box>
     );

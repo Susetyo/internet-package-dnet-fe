@@ -668,7 +668,9 @@ export function AdminCustomersPage() {
                 fullWidth
                 maxWidth="xs"
             >
-                <DialogTitle>Hapus customer?</DialogTitle>
+                <DialogTitle sx={{ color: "#102331", fontWeight: 900 }}>
+                    Hapus customer?
+                </DialogTitle>
                 <DialogContent>
                     <Typography>
                         Data {deletingCustomer?.name} dan akun login terkait
