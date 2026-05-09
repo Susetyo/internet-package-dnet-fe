@@ -1,73 +1,125 @@
-# React + TypeScript + Vite
+# Internet Package DNET FE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend untuk proyek Internet Package DNET yang dibuat dengan React, TypeScript, Vite, dan pnpm.
 
-Currently, two official plugins are available:
+## Kebutuhan Sistem
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Pastikan perangkat sudah memiliki:
 
-## React Compiler
+- Node.js `^20.19.0` atau `>=22.12.0`
+- pnpm
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Rekomendasi versi Node: gunakan Node.js `22.x LTS` agar sesuai dengan kebutuhan Vite 8.
 
-## Expanding the ESLint configuration
+Untuk mengecek versi Node dan pnpm:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+node -v
+pnpm -v
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Jika belum memiliki pnpm, install dengan:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install -g pnpm
 ```
+
+Jika menggunakan `nvm`, contoh penggunaan Node 22:
+
+```bash
+nvm install 22
+nvm use 22
+```
+
+## Cara Install Project
+
+1. Clone repository:
+
+```bash
+git clone <url-repository>
+```
+
+2. Masuk ke folder project:
+
+```bash
+cd internet-package-dnet-fe
+```
+
+3. Install dependency:
+
+```bash
+pnpm install
+```
+
+## Cara Menjalankan Project di Local
+
+Project ini membutuhkan dua proses saat development:
+
+- frontend Vite
+- mock API menggunakan `json-server`
+
+Jalankan mock API:
+
+```bash
+pnpm server
+```
+
+Secara default mock API berjalan di:
+
+```text
+http://localhost:3001
+```
+
+Buka terminal baru, lalu jalankan frontend:
+
+```bash
+pnpm dev
+```
+
+Secara default frontend berjalan di:
+
+```text
+http://localhost:5173
+```
+
+## Script yang Tersedia
+
+```bash
+pnpm dev
+```
+
+Menjalankan development server Vite.
+
+```bash
+pnpm server
+```
+
+Menjalankan mock API dari file `db.json` di port `3001`.
+
+```bash
+pnpm build
+```
+
+Membuat build production.
+
+```bash
+pnpm preview
+```
+
+Menjalankan preview dari hasil build production.
+
+```bash
+pnpm lint
+```
+
+Menjalankan pengecekan lint.
+
+## Build Production
+
+Untuk membuat build production:
+
+```bash
+pnpm build
+```
+
+Hasil build akan tersedia di folder `dist`.

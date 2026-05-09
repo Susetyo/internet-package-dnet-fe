@@ -28,6 +28,7 @@ import {
     Typography,
 } from "@mui/material";
 import { useState } from "react";
+import type { ReactNode } from "react";
 import {
     Outlet,
     useLocation,
@@ -35,6 +36,120 @@ import {
     useSearchParams,
 } from "react-router-dom";
 import { useAuthStore } from "../../features/auth/store/auth.store";
+
+type DashboardMenuItem = {
+    label: string;
+    mobileLabel: string;
+    icon: ReactNode;
+    path: string;
+};
+
+type DashboardMenuContentProps = {
+    currentPath: string;
+    menuItems: DashboardMenuItem[];
+    onLogout: () => void;
+    onNavigate: (path: string) => void;
+};
+
+function DashboardMenuContent({
+    currentPath,
+    menuItems,
+    onLogout,
+    onNavigate,
+}: DashboardMenuContentProps) {
+    return (
+        <Box
+            sx={{
+                p: 1.5,
+                minWidth: 280,
+            }}
+        >
+            <Box
+                sx={{
+                    px: 2,
+                    py: 1.5,
+                    mb: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    color: "#f6c400",
+                    fontWeight: 800,
+                }}
+            >
+                <WifiRounded fontSize="small" />
+                Internet Portal
+            </Box>
+            <List disablePadding>
+                {menuItems.map((item) => (
+                    <ListItemButton
+                        key={item.label}
+                        selected={currentPath === item.path}
+                        onClick={() => onNavigate(item.path)}
+                        sx={{
+                            mx: 0.5,
+                            mb: 0.75,
+                            borderRadius: 1,
+                            color: "rgba(255,255,255,0.78)",
+                            "&.Mui-selected": {
+                                bgcolor: "transparent",
+                                color: "#f6c400",
+                                "& .MuiListItemIcon-root": {
+                                    color: "#f6c400",
+                                },
+                            },
+                            "&:hover": {
+                                bgcolor: "transparent",
+                                color: "#f6c400",
+                                "& .MuiListItemIcon-root": {
+                                    color: "#f6c400",
+                                },
+                            },
+                            "&.Mui-selected:hover": {
+                                bgcolor: "transparent",
+                            },
+                        }}
+                    >
+                        <ListItemIcon
+                            sx={{
+                                minWidth: 38,
+                                color: "rgba(255,255,255,0.72)",
+                            }}
+                        >
+                            {item.icon}
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={item.label}
+                            slotProps={{
+                                primary: {
+                                    sx: {
+                                        fontSize: 14,
+                                        fontWeight: 800,
+                                    },
+                                },
+                            }}
+                        />
+                    </ListItemButton>
+                ))}
+            </List>
+            <Button
+                fullWidth
+                startIcon={<LogoutRounded />}
+                onClick={onLogout}
+                sx={{
+                    mt: 2,
+                    justifyContent: "flex-start",
+                    color: "#ff7f9c",
+                    textTransform: "none",
+                    fontWeight: 800,
+                    borderRadius: 1,
+                    px: 2,
+                }}
+            >
+                Keluar
+            </Button>
+        </Box>
+    );
+}
 
 export function DashboardLayout() {
     const navigate = useNavigate();
@@ -46,7 +161,7 @@ export function DashboardLayout() {
         location.pathname === "/dashboard/beli-paket"
             ? searchParams.get("search") ?? ""
             : "";
-    const menuItems = [
+    const menuItems: DashboardMenuItem[] = [
         {
             label: "Dashboard",
             mobileLabel: "Dashboard",
@@ -103,98 +218,6 @@ export function DashboardLayout() {
     const activePath =
         menuItems.find((item) => location.pathname === item.path)?.path ??
         "/dashboard";
-    const MenuContent = () => (
-        <Box
-            sx={{
-                p: 1.5,
-                minWidth: 280,
-            }}
-        >
-            <Box
-                sx={{
-                    px: 2,
-                    py: 1.5,
-                    mb: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    color: "#f6c400",
-                    fontWeight: 800,
-                }}
-            >
-                <WifiRounded fontSize="small" />
-                Internet Portal
-            </Box>
-            <List disablePadding>
-                {menuItems.map((item) => (
-                    <ListItemButton
-                        key={item.label}
-                        selected={location.pathname === item.path}
-                        onClick={() => handleNavigate(item.path)}
-                        sx={{
-                            mx: 0.5,
-                            mb: 0.75,
-                            borderRadius: 1,
-                            color: "rgba(255,255,255,0.78)",
-                            "&.Mui-selected": {
-                                bgcolor: "transparent",
-                                color: "#f6c400",
-                                "& .MuiListItemIcon-root": {
-                                    color: "#f6c400",
-                                },
-                            },
-                            "&:hover": {
-                                bgcolor: "transparent",
-                                color: "#f6c400",
-                                "& .MuiListItemIcon-root": {
-                                    color: "#f6c400",
-                                },
-                            },
-                            "&.Mui-selected:hover": {
-                                bgcolor: "transparent",
-                            },
-                        }}
-                    >
-                        <ListItemIcon
-                            sx={{
-                                minWidth: 38,
-                                color: "rgba(255,255,255,0.72)",
-                            }}
-                        >
-                            {item.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={item.label}
-                            slotProps={{
-                                primary: {
-                                    sx: {
-                                        fontSize: 14,
-                                        fontWeight: 800,
-                                    },
-                                },
-                            }}
-                        />
-                    </ListItemButton>
-                ))}
-            </List>
-            <Button
-                fullWidth
-                startIcon={<LogoutRounded />}
-                onClick={handleLogout}
-                sx={{
-                    mt: 2,
-                    justifyContent: "flex-start",
-                    color: "#ff7f9c",
-                    textTransform: "none",
-                    fontWeight: 800,
-                    borderRadius: 1,
-                    px: 2,
-                }}
-            >
-                Keluar
-            </Button>
-        </Box>
-    );
 
     return (
         <Box
@@ -378,7 +401,12 @@ export function DashboardLayout() {
                             border: "1px solid rgba(255,255,255,0.1)",
                         }}
                     >
-                        <MenuContent />
+                        <DashboardMenuContent
+                            currentPath={location.pathname}
+                            menuItems={menuItems}
+                            onLogout={handleLogout}
+                            onNavigate={handleNavigate}
+                        />
                     </Box>
                 </Box>
 
