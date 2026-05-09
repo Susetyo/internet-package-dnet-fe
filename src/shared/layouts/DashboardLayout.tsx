@@ -2,7 +2,6 @@ import {
     DashboardRounded,
     HistoryRounded,
     LogoutRounded,
-    MenuRounded,
     PeopleRounded,
     ReceiptLongRounded,
     SearchRounded,
@@ -12,18 +11,23 @@ import {
     AppBar,
     Avatar,
     Box,
+    BottomNavigation,
+    BottomNavigationAction,
     Button,
     Container,
-    IconButton,
     InputAdornment,
     List,
     ListItemButton,
     ListItemIcon,
     ListItemText,
+    Menu,
+    MenuItem,
+    Paper,
     TextField,
     Toolbar,
     Typography,
 } from "@mui/material";
+import { useState } from "react";
 import {
     Outlet,
     useLocation,
@@ -37,14 +41,21 @@ export function DashboardLayout() {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const { user, logout } = useAuthStore();
+    const [avatarAnchor, setAvatarAnchor] = useState<HTMLElement | null>(null);
     const packageSearch =
         location.pathname === "/dashboard/beli-paket"
             ? searchParams.get("search") ?? ""
             : "";
     const menuItems = [
-        { label: "Dashboard", icon: <DashboardRounded />, path: "/dashboard" },
+        {
+            label: "Dashboard",
+            mobileLabel: "Dashboard",
+            icon: <DashboardRounded />,
+            path: "/dashboard",
+        },
         {
             label: user?.role === "admin" ? "Beli Paket Admin" : "Beli Paket",
+            mobileLabel: "Paket",
             icon: <WifiRounded />,
             path:
                 user?.role === "admin"
@@ -55,6 +66,7 @@ export function DashboardLayout() {
             ? [
                   {
                       label: "Customer",
+                      mobileLabel: "Customer",
                       icon: <PeopleRounded />,
                       path: "/dashboard/admin/customer",
                   },
@@ -62,6 +74,7 @@ export function DashboardLayout() {
             : []),
         {
             label: "Transaksi",
+            mobileLabel: "Transaksi",
             icon: <ReceiptLongRounded />,
             path:
                 user?.role === "admin"
@@ -71,6 +84,7 @@ export function DashboardLayout() {
         {
             label:
                 user?.role === "admin" ? "Riwayat Customer" : "Riwayat",
+            mobileLabel: "Riwayat",
             icon: <HistoryRounded />,
             path:
                 user?.role === "admin"
@@ -78,6 +92,109 @@ export function DashboardLayout() {
                     : "/dashboard/riwayat",
         },
     ];
+    const handleNavigate = (path: string) => {
+        navigate(path);
+    };
+    const handleLogout = () => {
+        logout();
+        setAvatarAnchor(null);
+        navigate("/login");
+    };
+    const activePath =
+        menuItems.find((item) => location.pathname === item.path)?.path ??
+        "/dashboard";
+    const MenuContent = () => (
+        <Box
+            sx={{
+                p: 1.5,
+                minWidth: 280,
+            }}
+        >
+            <Box
+                sx={{
+                    px: 2,
+                    py: 1.5,
+                    mb: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    color: "#f6c400",
+                    fontWeight: 800,
+                }}
+            >
+                <WifiRounded fontSize="small" />
+                Internet Portal
+            </Box>
+            <List disablePadding>
+                {menuItems.map((item) => (
+                    <ListItemButton
+                        key={item.label}
+                        selected={location.pathname === item.path}
+                        onClick={() => handleNavigate(item.path)}
+                        sx={{
+                            mx: 0.5,
+                            mb: 0.75,
+                            borderRadius: 1,
+                            color: "rgba(255,255,255,0.78)",
+                            "&.Mui-selected": {
+                                bgcolor: "transparent",
+                                color: "#f6c400",
+                                "& .MuiListItemIcon-root": {
+                                    color: "#f6c400",
+                                },
+                            },
+                            "&:hover": {
+                                bgcolor: "transparent",
+                                color: "#f6c400",
+                                "& .MuiListItemIcon-root": {
+                                    color: "#f6c400",
+                                },
+                            },
+                            "&.Mui-selected:hover": {
+                                bgcolor: "transparent",
+                            },
+                        }}
+                    >
+                        <ListItemIcon
+                            sx={{
+                                minWidth: 38,
+                                color: "rgba(255,255,255,0.72)",
+                            }}
+                        >
+                            {item.icon}
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={item.label}
+                            slotProps={{
+                                primary: {
+                                    sx: {
+                                        fontSize: 14,
+                                        fontWeight: 800,
+                                    },
+                                },
+                            }}
+                        />
+                    </ListItemButton>
+                ))}
+            </List>
+            <Button
+                fullWidth
+                startIcon={<LogoutRounded />}
+                onClick={handleLogout}
+                sx={{
+                    mt: 2,
+                    justifyContent: "flex-start",
+                    color: "#ff7f9c",
+                    textTransform: "none",
+                    fontWeight: 800,
+                    borderRadius: 1,
+                    px: 2,
+                }}
+            >
+                Keluar
+            </Button>
+        </Box>
+    );
 
     return (
         <Box
@@ -108,12 +225,12 @@ export function DashboardLayout() {
                             width: "100%",
                         }}
                     >
-                        <IconButton
-                            sx={{ display: { md: "none" }, color: "#fff" }}
-                            aria-label="menu"
-                        >
-                            <MenuRounded />
-                        </IconButton>
+                        <Box
+                            sx={{
+                                display: { xs: "block", md: "none" },
+                                width: 40,
+                            }}
+                        />
                         <Box
                             sx={{
                                 display: "flex",
@@ -191,12 +308,52 @@ export function DashboardLayout() {
                                 }}
                             />
                         )}
-                        <Avatar sx={{ bgcolor: "#006bb6", fontWeight: 800 }}>
+                        <Avatar
+                            onClick={(event) =>
+                                setAvatarAnchor(event.currentTarget)
+                            }
+                            sx={{
+                                bgcolor: "#006bb6",
+                                fontWeight: 800,
+                                cursor: "pointer",
+                            }}
+                        >
                             {user?.name?.charAt(0) ?? "U"}
                         </Avatar>
                     </Container>
                 </Toolbar>
             </AppBar>
+
+            <Menu
+                anchorEl={avatarAnchor}
+                open={Boolean(avatarAnchor)}
+                onClose={() => setAvatarAnchor(null)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                slotProps={{
+                    paper: {
+                        sx: {
+                            mt: 1,
+                            minWidth: 160,
+                            bgcolor: "rgba(14, 29, 42, 0.98)",
+                            color: "#f7fbff",
+                            border: "1px solid rgba(255,255,255,0.1)",
+                        },
+                    },
+                }}
+            >
+                <MenuItem
+                    onClick={handleLogout}
+                    sx={{
+                        color: "#ff7f9c",
+                        fontWeight: 800,
+                        gap: 1,
+                    }}
+                >
+                    <LogoutRounded fontSize="small" />
+                    Keluar
+                </MenuItem>
+            </Menu>
 
             <Container
                 maxWidth="xl"
@@ -204,7 +361,8 @@ export function DashboardLayout() {
                     display: "grid",
                     gridTemplateColumns: { xs: "1fr", md: "260px 1fr" },
                     gap: 3,
-                    py: 4,
+                    pt: 4,
+                    pb: { xs: 12, md: 4 },
                 }}
             >
                 <Box
@@ -216,86 +374,11 @@ export function DashboardLayout() {
                             position: "sticky",
                             top: 96,
                             borderRadius: 1.25,
-                            p: 1.5,
                             bgcolor: "rgba(255,255,255,0.08)",
                             border: "1px solid rgba(255,255,255,0.1)",
                         }}
                     >
-                        <Box
-                            sx={{
-                                px: 2,
-                                py: 1.5,
-                                mb: 1,
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                                color: "#f6c400",
-                                fontWeight: 800,
-                            }}
-                        >
-                            <WifiRounded fontSize="small" />
-                            Internet Portal
-                        </Box>
-                        <List disablePadding>
-                            {menuItems.map((item) => (
-                                <ListItemButton
-                                    key={item.label}
-                                    selected={location.pathname === item.path}
-                                    onClick={() => navigate(item.path)}
-                                    sx={{
-                                        mb: 0.75,
-                                        borderRadius: 1,
-                                        color: "rgba(255,255,255,0.78)",
-                                        "&.Mui-selected": {
-                                            bgcolor: "#f6c400",
-                                            color: "#102331",
-                                            "& .MuiListItemIcon-root": {
-                                                color: "#102331",
-                                            },
-                                        },
-                                    }}
-                                >
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 38,
-                                            color: "rgba(255,255,255,0.72)",
-                                        }}
-                                    >
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={item.label}
-                                        slotProps={{
-                                            primary: {
-                                                sx: {
-                                                    fontSize: 14,
-                                                    fontWeight: 800,
-                                                },
-                                            },
-                                        }}
-                                    />
-                                </ListItemButton>
-                            ))}
-                        </List>
-                        <Button
-                            fullWidth
-                            startIcon={<LogoutRounded />}
-                            onClick={() => {
-                                logout();
-                                navigate("/login");
-                            }}
-                            sx={{
-                                mt: 2,
-                                justifyContent: "flex-start",
-                                color: "#ff7f9c",
-                                textTransform: "none",
-                                fontWeight: 800,
-                                borderRadius: 1,
-                                px: 2,
-                            }}
-                        >
-                            Keluar
-                        </Button>
+                        <MenuContent />
                     </Box>
                 </Box>
 
@@ -303,6 +386,58 @@ export function DashboardLayout() {
                     <Outlet />
                 </Box>
             </Container>
+
+            <Paper
+                elevation={12}
+                sx={{
+                    display: { xs: "block", md: "none" },
+                    position: "fixed",
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: (theme) => theme.zIndex.appBar + 1,
+                    bgcolor: "rgba(9, 16, 24, 0.96)",
+                    borderTop: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 0,
+                    backdropFilter: "blur(18px)",
+                    pb: "env(safe-area-inset-bottom)",
+                }}
+            >
+                <BottomNavigation
+                    showLabels
+                    value={activePath}
+                    onChange={(_, value: string) => handleNavigate(value)}
+                    sx={{
+                        height: 68,
+                        bgcolor: "transparent",
+                        "& .MuiBottomNavigationAction-root": {
+                            minWidth: 0,
+                            color: "rgba(255,255,255,0.62)",
+                            px: 0.5,
+                        },
+                        "& .MuiBottomNavigationAction-root.Mui-selected": {
+                            color: "#f6c400",
+                        },
+                        "& .MuiBottomNavigationAction-root.Mui-selected svg": {
+                            color: "#f6c400",
+                        },
+                        "& .MuiBottomNavigationAction-label": {
+                            fontSize: 10,
+                            fontWeight: 800,
+                            whiteSpace: "nowrap",
+                        },
+                    }}
+                >
+                    {menuItems.map((item) => (
+                        <BottomNavigationAction
+                            key={item.path}
+                            label={item.mobileLabel}
+                            value={item.path}
+                            icon={item.icon}
+                        />
+                    ))}
+                </BottomNavigation>
+            </Paper>
         </Box>
     );
 }

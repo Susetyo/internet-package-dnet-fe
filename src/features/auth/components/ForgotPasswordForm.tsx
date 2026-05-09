@@ -46,17 +46,14 @@ export function ForgotPasswordForm() {
             sx={{
                 width: "100%",
                 minHeight: { xs: "auto", md: "100dvh" },
-                borderRadius: { xs: 4, md: 0 },
+                borderRadius: { xs: 1, md: 0 },
                 overflow: "hidden",
                 bgcolor: "transparent",
                 boxShadow: {
-                    xs: "0 28px 70px rgba(0, 0, 0, 0.3)",
+                    xs: "none",
                     md: "none",
                 },
-                border: {
-                    xs: "1px solid rgba(255, 255, 255, 0.8)",
-                    md: "none",
-                },
+                border: "none",
             }}
         >
             <CardContent
@@ -64,9 +61,9 @@ export function ForgotPasswordForm() {
                     display: "grid",
                     gridTemplateColumns: { xs: "1fr", md: "1fr 1.1fr" },
                     gap: 0,
-                    p: { xs: 2, sm: 3, md: 0 },
+                    p: { xs: 0, md: 0 },
                     minHeight: "inherit",
-                    "&:last-child": { pb: { xs: 2, sm: 3, md: 0 } },
+                    "&:last-child": { pb: 0 },
                 }}
             >
                 <Box

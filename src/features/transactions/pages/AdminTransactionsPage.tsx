@@ -16,7 +16,11 @@ import {
     Typography,
 } from "@mui/material";
 import { useMemo, useState } from "react";
-import { DashboardCard, EmptyPanel } from "../../../shared/components";
+import {
+    DashboardCard,
+    EmptyPanel,
+    TransactionStatusChip,
+} from "../../../shared/components";
 import {
     useCustomersQuery,
     usePackagesQuery,
@@ -30,7 +34,7 @@ import { AdminManualPaymentDialog } from "../components";
 import { useAdminManualPaymentMutation } from "../hooks";
 import type { PendingCustomerTransaction } from "../types/transaction.types";
 
-type PendingAdminTransaction = PendingCustomerTransaction & {
+type AdminTransaction = PendingCustomerTransaction & {
     customer?: Customer;
 };
 
@@ -38,7 +42,7 @@ export function AdminTransactionsPage() {
     const user = useAuthStore((state) => state.user);
     const [selectedCustomerId, setSelectedCustomerId] = useState("");
     const [manualTransaction, setManualTransaction] =
-        useState<PendingAdminTransaction | null>(null);
+        useState<AdminTransaction | null>(null);
     const [manualPaymentError, setManualPaymentError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -54,7 +58,6 @@ export function AdminTransactionsPage() {
         isFetching: isTransactionsFetching,
     } = useTransactionsQuery({
         customerId: selectedCustomerId || undefined,
-        status: "pending",
     });
     const {
         data: packs = [],
@@ -73,7 +76,7 @@ export function AdminTransactionsPage() {
     const selectedCustomer = selectedCustomerId
         ? customerById.get(selectedCustomerId)
         : undefined;
-    const pendingTransactions = useMemo<PendingAdminTransaction[]>(
+    const adminTransactions = useMemo<AdminTransaction[]>(
         () =>
             transactions.map((transaction) => ({
                 ...transaction,
@@ -108,6 +111,9 @@ export function AdminTransactionsPage() {
         );
     }
 
+    const pendingCount = adminTransactions.filter(
+        (transaction) => transaction.status === "pending",
+    ).length;
     const isLoading = isCustomersLoading || isTransactionsLoading || isPackagesLoading;
     const hasError = isCustomersError || isTransactionsError || isPackagesError;
 
@@ -140,11 +146,10 @@ export function AdminTransactionsPage() {
                         m: 0,
                     }}
                 >
-                    Transaksi Pending Admin
+                    Transaksi Admin
                 </Typography>
                 <Typography sx={{ color: "rgba(255,255,255,0.7)", mt: 0.5 }}>
-                    Pilih customer tertentu atau tampilkan semua transaksi yang
-                    menunggu pembayaran.
+                    Pilih customer tertentu atau tampilkan semua transaksi.
                 </Typography>
             </Box>
 
@@ -176,7 +181,7 @@ export function AdminTransactionsPage() {
                             </Box>
                         </Stack>
                         <Chip
-                            label={`${pendingTransactions.length} menunggu`}
+                            label={`${adminTransactions.length} transaksi`}
                             sx={{
                                 bgcolor: "rgba(246,196,0,0.16)",
                                 color: "#f6c400",
@@ -237,14 +242,22 @@ export function AdminTransactionsPage() {
                         </Box>
                         <Box>
                             <Typography sx={sectionTitleSx}>
-                                Invoice Menunggu Pembayaran
+                                Daftar Transaksi
                             </Typography>
                             <Typography sx={{ color: "rgba(255,255,255,0.62)" }}>
-                                Admin dapat upload bukti dan mengubah status menjadi
-                                sukses.
+                                Admin dapat upload bukti untuk transaksi yang
+                                masih menunggu pembayaran.
                             </Typography>
                         </Box>
                     </Stack>
+                    <Chip
+                        label={`${pendingCount} menunggu`}
+                        sx={{
+                            bgcolor: "rgba(246,196,0,0.16)",
+                            color: "#f6c400",
+                            fontWeight: 900,
+                        }}
+                    />
                 </Stack>
 
                 {isLoading ? (
@@ -258,10 +271,10 @@ export function AdminTransactionsPage() {
                             Memuat transaksi...
                         </Typography>
                     </Stack>
-                ) : pendingTransactions.length ? (
+                ) : adminTransactions.length ? (
                     <Stack spacing={1.5}>
-                        {pendingTransactions.map((transaction) => (
-                            <AdminPendingTransactionCard
+                        {adminTransactions.map((transaction) => (
+                            <AdminTransactionCard
                                 key={transaction.id}
                                 transaction={transaction}
                                 onManualPayment={(selectedTransaction) => {
@@ -272,7 +285,7 @@ export function AdminTransactionsPage() {
                         ))}
                     </Stack>
                 ) : (
-                    <EmptyPanel message="Tidak ada transaksi pending pada filter ini." />
+                    <EmptyPanel message="Tidak ada transaksi pada filter ini." />
                 )}
             </DashboardCard>
 
@@ -292,12 +305,12 @@ export function AdminTransactionsPage() {
     );
 }
 
-function AdminPendingTransactionCard({
+function AdminTransactionCard({
     transaction,
     onManualPayment,
 }: {
-    transaction: PendingAdminTransaction;
-    onManualPayment: (transaction: PendingAdminTransaction) => void;
+    transaction: AdminTransaction;
+    onManualPayment: (transaction: AdminTransaction) => void;
 }) {
     return (
         <Box
@@ -363,6 +376,7 @@ function AdminPendingTransactionCard({
                     spacing={1}
                     sx={{ width: { xs: "100%", md: "auto" } }}
                 >
+                    <TransactionStatusChip showIcon status={transaction.status} />
                     <Chip
                         label={formatCurrency(transaction.package?.price ?? 0)}
                         sx={{
@@ -371,20 +385,22 @@ function AdminPendingTransactionCard({
                             fontWeight: 900,
                         }}
                     />
-                    <Button
-                        variant="contained"
-                        startIcon={<CheckCircleRounded />}
-                        onClick={() => onManualPayment(transaction)}
-                        sx={{
-                            bgcolor: "#f6c400",
-                            color: "#102331",
-                            textTransform: "none",
-                            fontWeight: 900,
-                            "&:hover": { bgcolor: "#e5b600" },
-                        }}
-                    >
-                        Manual Pembayaran
-                    </Button>
+                    {transaction.status === "pending" && (
+                        <Button
+                            variant="contained"
+                            startIcon={<CheckCircleRounded />}
+                            onClick={() => onManualPayment(transaction)}
+                            sx={{
+                                bgcolor: "#f6c400",
+                                color: "#102331",
+                                textTransform: "none",
+                                fontWeight: 900,
+                                "&:hover": { bgcolor: "#e5b600" },
+                            }}
+                        >
+                            Manual Pembayaran
+                        </Button>
+                    )}
                 </Stack>
             </Stack>
         </Box>
