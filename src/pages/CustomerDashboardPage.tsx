@@ -1,5 +1,6 @@
 import {
     AccountCircleRounded,
+    ArrowForwardRounded,
     CheckCircleRounded,
     ErrorRounded,
     FilterAltRounded,
@@ -28,6 +29,7 @@ import {
     Typography,
 } from "@mui/material";
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../features/auth/store/auth.store";
 import type { TransactionStatus } from "../features/transactions/types/transaction.types";
 import {
@@ -61,6 +63,7 @@ const statusColors: Record<TransactionStatus, { bg: string; fg: string }> = {
 };
 
 export function CustomerDashboardPage() {
+    const navigate = useNavigate();
     const user = useAuthStore((state) => state.user);
     const customerId = user?.customerId;
     const [defaultRange] = useState(getDefaultDateRange);
@@ -119,6 +122,18 @@ export function CustomerDashboardPage() {
             .sort((a, b) => b.transactionCount - a.transactionCount)
             .slice(0, 4);
     }, [packs, transactions]);
+
+    const latestTransactions = useMemo(
+        () =>
+            [...transactions]
+                .sort(
+                    (a, b) =>
+                        new Date(b.createdAt).getTime() -
+                        new Date(a.createdAt).getTime(),
+                )
+                .slice(0, 5),
+        [transactions],
+    );
 
     const isLoading =
         isCustomerLoading || isPackagesLoading || isTransactionsLoading;
@@ -399,14 +414,31 @@ export function CustomerDashboardPage() {
                     <Typography sx={sectionTitleSx}>
                         Riwayat Transaksi Saya
                     </Typography>
-                    <Chip
-                        label={`${transactions.length} data`}
-                        sx={{
-                            bgcolor: "rgba(246,196,0,0.16)",
-                            color: "#f6d84f",
-                            fontWeight: 900,
-                        }}
-                    />
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ alignItems: "center", flexWrap: "wrap" }}
+                    >
+                        <Chip
+                            label={`${latestTransactions.length} terbaru dari ${transactions.length}`}
+                            sx={{
+                                bgcolor: "rgba(246,196,0,0.16)",
+                                color: "#f6d84f",
+                                fontWeight: 900,
+                            }}
+                        />
+                        <Button
+                            endIcon={<ArrowForwardRounded />}
+                            onClick={() => navigate("/dashboard/riwayat")}
+                            sx={{
+                                color: "#72d8ff",
+                                fontWeight: 900,
+                                textTransform: "none",
+                            }}
+                        >
+                            Lihat selengkapnya
+                        </Button>
+                    </Stack>
                 </Stack>
                 <TableContainer>
                     <Table sx={{ minWidth: 820 }}>
@@ -427,7 +459,7 @@ export function CustomerDashboardPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {transactions.map((tx) => {
+                            {latestTransactions.map((tx) => {
                                 const pack = packageById.get(tx.packageId);
                                 const colors = statusColors[tx.status];
 

@@ -8,7 +8,8 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../auth/store/auth.store";
 import { DashboardCard, EmptyPanel } from "../../../shared/components";
 import { usePackagesQuery } from "../../../shared/hooks";
@@ -45,8 +46,10 @@ const imageThemes = [
 ];
 
 export function BuyPackagePage() {
+    const navigate = useNavigate();
     const user = useAuthStore((state) => state.user);
     const customerId = user?.customerId;
+    const redirectTimerRef = useRef<number | null>(null);
     const [selectedPackageId, setSelectedPackageId] = useState<string | null>(
         null,
     );
@@ -74,9 +77,20 @@ export function BuyPackagePage() {
         },
         onSuccess: (pack) => {
             setSuccessPackageName(pack.name);
+            redirectTimerRef.current = window.setTimeout(() => {
+                navigate("/dashboard/transaksi");
+            }, 1200);
         },
         onSettled: () => setSelectedPackageId(null),
     });
+
+    useEffect(() => {
+        return () => {
+            if (redirectTimerRef.current) {
+                window.clearTimeout(redirectTimerRef.current);
+            }
+        };
+    }, []);
 
     if (!customerId) {
         return (
@@ -101,16 +115,11 @@ export function BuyPackagePage() {
                 </Alert>
             )}
             {successPackageName && (
-                <Alert
-                    icon={<CheckCircleRounded fontSize="inherit" />}
-                    severity="success"
-                    onClose={() => setSuccessPackageName("")}
-                >
-                    Pembelian {successPackageName} berhasil dibuat dan menunggu
-                    pembayaran QRIS.
+                <Alert icon={<CheckCircleRounded fontSize="inherit" />} severity="success">
+                    Pembelian {successPackageName} berhasil dibuat. Anda akan
+                    diarahkan ke menu transaksi.
                 </Alert>
             )}
-
             <Box>
                 <Typography
                     component="h1"
