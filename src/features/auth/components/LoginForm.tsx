@@ -11,29 +11,19 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { login } from "../api/auth.api";
-import { useAuthStore } from "../store/auth.store";
+import { Link as RouterLink } from "react-router-dom";
+import { useLoginMutation } from "../hooks";
 import type { LoginPayload } from "../types/auth.types";
 import { LoginIllustration } from "./LoginIllustration";
 
 export function LoginForm() {
-    const navigate = useNavigate();
-    const setUser = useAuthStore((state) => state.setUser);
     const { control, handleSubmit } = useForm<LoginPayload>({
         defaultValues: { email: "admin@mail.com", password: "admin123" },
         mode: "onBlur",
     });
 
-    const mutation = useMutation({
-        mutationFn: login,
-        onSuccess: (user) => {
-            setUser(user);
-            navigate("/dashboard");
-        },
-    });
+    const mutation = useLoginMutation();
 
     const onSubmit = (values: LoginPayload) => mutation.mutate(values);
 

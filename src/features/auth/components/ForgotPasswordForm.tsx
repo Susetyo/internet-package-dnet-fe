@@ -9,10 +9,9 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
-import { resetPassword } from "../api/auth.api";
+import { useResetPasswordMutation } from "../hooks";
 import type { ForgotPasswordPayload } from "../types/auth.types";
 import { LoginIllustration } from "./LoginIllustration";
 
@@ -30,12 +29,7 @@ export function ForgotPasswordForm() {
         mode: "onBlur",
     });
 
-    const mutation = useMutation({
-        mutationFn: resetPassword,
-        onSuccess: () => {
-            reset();
-        },
-    });
+    const mutation = useResetPasswordMutation({ onSuccess: reset });
 
     const onSubmit = (values: ForgotPasswordFormValues) => {
         const payload: ForgotPasswordPayload = {

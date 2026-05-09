@@ -27,12 +27,8 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { customersApi } from "../features/customers/api/customers.api";
-import { packagesApi } from "../features/internet-packages/api/packages.api";
 import { useAuthStore } from "../features/auth/store/auth.store";
-import { transactionsApi } from "../features/transactions/api/transactions.api";
 import type { TransactionStatus } from "../features/transactions/types/transaction.types";
 import {
     DashboardCard,
@@ -46,6 +42,11 @@ import {
     formatDate,
     getDefaultDateRange,
 } from "../shared/utils";
+import {
+    useCustomerQuery,
+    usePackagesQuery,
+    useTransactionsQuery,
+} from "../shared/hooks";
 
 const statusLabels: Record<TransactionStatus, string> = {
     pending: "Menunggu",
@@ -71,35 +72,18 @@ export function CustomerDashboardPage() {
         data: customer,
         isLoading: isCustomerLoading,
         isError: isCustomerError,
-    } = useQuery({
-        queryKey: ["customer", customerId],
-        queryFn: () => customersApi.getById(customerId ?? ""),
-        enabled: Boolean(customerId),
-    });
+    } = useCustomerQuery(customerId);
     const {
         data: packs = [],
         isLoading: isPackagesLoading,
         isError: isPackagesError,
-    } = useQuery({
-        queryKey: ["packages"],
-        queryFn: packagesApi.getAll,
-    });
+    } = usePackagesQuery();
     const {
         data: transactions = [],
         isLoading: isTransactionsLoading,
         isError: isTransactionsError,
         isFetching: isTransactionsFetching,
-    } = useQuery({
-        queryKey: ["transactions", customerId, startDate, endDate, status],
-        queryFn: () =>
-            transactionsApi.getAll({
-                customerId,
-                startDate,
-                endDate,
-                status,
-            }),
-        enabled: Boolean(customerId),
-    });
+    } = useTransactionsQuery({ customerId, startDate, endDate, status });
 
     const packageById = useMemo(
         () => new Map(packs.map((pack) => [pack.id, pack])),

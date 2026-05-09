@@ -8,14 +8,12 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useAuthStore } from "../../auth/store/auth.store";
-import { transactionsApi } from "../../transactions/api/transactions.api";
-import type { Transaction } from "../../transactions/types/transaction.types";
 import { DashboardCard, EmptyPanel } from "../../../shared/components";
-import { packagesApi } from "../api/packages.api";
+import { usePackagesQuery } from "../../../shared/hooks";
 import { PackageBuyCard } from "../components";
+import { useBuyPackageMutation } from "../hooks";
 import type { InternetPackage } from "../types/package.types";
 
 const packageAccents = ["#72d8ff", "#f6c400", "#8cc63f", "#ff8fb3"];
@@ -49,7 +47,6 @@ const imageThemes = [
 export function BuyPackagePage() {
     const user = useAuthStore((state) => state.user);
     const customerId = user?.customerId;
-    const queryClient = useQueryClient();
     const [selectedPackageId, setSelectedPackageId] = useState<string | null>(
         null,
     );
@@ -59,10 +56,7 @@ export function BuyPackagePage() {
         data: packs = [],
         isLoading,
         isError,
-    } = useQuery({
-        queryKey: ["packages"],
-        queryFn: packagesApi.getAll,
-    });
+    } = usePackagesQuery();
 
     const recommendedPackage = useMemo(
         () => packs.reduce<InternetPackage | undefined>((best, pack) => {
@@ -72,30 +66,16 @@ export function BuyPackagePage() {
         [packs],
     );
 
-    const buyPackageMutation = useMutation({
-        mutationFn: (pack: InternetPackage) => {
-            const transaction: Transaction = {
-                id: `trx-${Date.now()}`,
-                customerId: customerId ?? "",
-                packageId: pack.id,
-                paymentMethod: "QRIS",
-                status: "pending",
-                createdAt: new Date().toISOString(),
-            };
-
-            return transactionsApi.create(transaction);
-        },
+    const buyPackageMutation = useBuyPackageMutation({
+        customerId,
         onMutate: (pack) => {
             setSelectedPackageId(pack.id);
             setSuccessPackageName("");
         },
-        onSuccess: (_transaction, pack) => {
+        onSuccess: (pack) => {
             setSuccessPackageName(pack.name);
-            queryClient.invalidateQueries({ queryKey: ["transactions"] });
         },
-        onSettled: () => {
-            setSelectedPackageId(null);
-        },
+        onSettled: () => setSelectedPackageId(null),
     });
 
     if (!customerId) {

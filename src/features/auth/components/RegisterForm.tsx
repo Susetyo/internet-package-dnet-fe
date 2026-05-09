@@ -9,11 +9,9 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { register } from "../api/auth.api";
-import { useAuthStore } from "../store/auth.store";
+import { Link as RouterLink } from "react-router-dom";
+import { useRegisterMutation } from "../hooks";
 import type { RegisterPayload } from "../types/auth.types";
 import { LoginIllustration } from "./LoginIllustration";
 
@@ -22,8 +20,6 @@ type RegisterFormValues = RegisterPayload & {
 };
 
 export function RegisterForm() {
-    const navigate = useNavigate();
-    const setUser = useAuthStore((state) => state.setUser);
     const { control, handleSubmit } = useForm<RegisterFormValues>({
         defaultValues: {
             name: "",
@@ -35,13 +31,7 @@ export function RegisterForm() {
         mode: "onBlur",
     });
 
-    const mutation = useMutation({
-        mutationFn: register,
-        onSuccess: (user) => {
-            setUser(user);
-            navigate("/dashboard");
-        },
-    });
+    const mutation = useRegisterMutation();
 
     const onSubmit = (values: RegisterFormValues) => {
         const payload: RegisterPayload = {

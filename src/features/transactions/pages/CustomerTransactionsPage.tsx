@@ -7,26 +7,23 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { DashboardCard, EmptyPanel } from "../../../shared/components";
-import { packagesApi } from "../../internet-packages/api/packages.api";
+import { usePackagesQuery, useTransactionsQuery } from "../../../shared/hooks";
 import { useAuthStore } from "../../auth/store/auth.store";
-import { transactionsApi } from "../api/transactions.api";
 import {
     ManualPaymentDialog,
     PendingTransactionCard,
     QrPaymentDialog,
 } from "../components";
+import { useManualPaymentMutation } from "../hooks";
 import type {
-    ManualPaymentCredentials,
     PendingCustomerTransaction,
 } from "../types/transaction.types";
 
 export function CustomerTransactionsPage() {
     const user = useAuthStore((state) => state.user);
     const customerId = user?.customerId;
-    const queryClient = useQueryClient();
     const [qrTransaction, setQrTransaction] =
         useState<PendingCustomerTransaction | null>(null);
     const [manualTransaction, setManualTransaction] =
@@ -38,20 +35,10 @@ export function CustomerTransactionsPage() {
         data: transactions = [],
         isLoading: isTransactionsLoading,
         isError: isTransactionsError,
-    } = useQuery({
-        queryKey: ["transactions", customerId, "pending"],
-        queryFn: () =>
-            transactionsApi.getAll({
-                customerId,
-                status: "pending",
-            }),
-        enabled: Boolean(customerId),
-    });
+    } = useTransactionsQuery({ customerId, status: "pending" });
 
-    const { data: packs = [], isLoading: isPackagesLoading } = useQuery({
-        queryKey: ["packages"],
-        queryFn: packagesApi.getAll,
-    });
+    const { data: packs = [], isLoading: isPackagesLoading } =
+        usePackagesQuery();
 
     const packageById = useMemo(
         () => new Map(packs.map((pack) => [pack.id, pack])),
@@ -67,24 +54,9 @@ export function CustomerTransactionsPage() {
         [packageById, transactions],
     );
 
-    const manualPaymentMutation = useMutation({
-        mutationFn: async (credentials: ManualPaymentCredentials) => {
-            if (!customerId || !manualTransaction) {
-                throw new Error("Transaksi tidak valid.");
-            }
-
-            const isVerified =
-                await transactionsApi.verifyManualPaymentCredentials(
-                    customerId,
-                    credentials,
-                );
-
-            if (!isVerified) {
-                throw new Error("Username atau password tidak sesuai.");
-            }
-
-            return transactionsApi.updateStatus(manualTransaction, "success");
-        },
+    const manualPaymentMutation = useManualPaymentMutation({
+        customerId,
+        transaction: manualTransaction,
         onMutate: () => {
             setManualPaymentError("");
             setSuccessMessage("");
@@ -97,14 +69,9 @@ export function CustomerTransactionsPage() {
                 `${packageName} berhasil dibayar. Pembelian paket internet berhasil.`,
             );
             setManualTransaction(null);
-            queryClient.invalidateQueries({ queryKey: ["transactions"] });
         },
         onError: (error) => {
-            setManualPaymentError(
-                error instanceof Error
-                    ? error.message
-                    : "Pembayaran manual gagal diproses.",
-            );
+            setManualPaymentError(error.message);
         },
     });
 

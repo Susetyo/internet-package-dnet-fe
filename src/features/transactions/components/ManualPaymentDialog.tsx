@@ -8,7 +8,7 @@ import {
     Stack,
     TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type {
     ManualPaymentCredentials,
     PendingCustomerTransaction,
@@ -31,19 +31,34 @@ export function ManualPaymentDialog({
     onClose,
     onSubmit,
 }: ManualPaymentDialogProps) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-
-    useEffect(() => {
-        if (!open) {
-            setUsername("");
-            setPassword("");
-        }
-    }, [open]);
-
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
             <DialogTitle sx={{ fontWeight: 900 }}>Manual Bayar</DialogTitle>
+            {open && (
+                <ManualPaymentForm
+                    errorMessage={errorMessage}
+                    isSubmitting={isSubmitting}
+                    transaction={transaction}
+                    onClose={onClose}
+                    onSubmit={onSubmit}
+                />
+            )}
+        </Dialog>
+    );
+}
+
+function ManualPaymentForm({
+    errorMessage,
+    isSubmitting,
+    transaction,
+    onClose,
+    onSubmit,
+}: Omit<ManualPaymentDialogProps, "open">) {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    return (
+        <>
             <DialogContent>
                 <Stack
                     component="form"
@@ -94,6 +109,6 @@ export function ManualPaymentDialog({
                     {isSubmitting ? "Memproses..." : "Konfirmasi Bayar"}
                 </Button>
             </DialogActions>
-        </Dialog>
+        </>
     );
 }

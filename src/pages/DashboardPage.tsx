@@ -28,11 +28,7 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { customersApi } from "../features/customers/api/customers.api";
-import { packagesApi } from "../features/internet-packages/api/packages.api";
-import { transactionsApi } from "../features/transactions/api/transactions.api";
 import type { TransactionStatus } from "../features/transactions/types/transaction.types";
 import {
     DashboardCard,
@@ -46,6 +42,11 @@ import {
     formatDate,
     getDefaultDateRange,
 } from "../shared/utils";
+import {
+    useCustomersQuery,
+    usePackagesQuery,
+    useTransactionsQuery,
+} from "../shared/hooks";
 
 const statusLabels: Record<TransactionStatus, string> = {
     pending: "Menunggu",
@@ -69,27 +70,18 @@ export function DashboardPage() {
         data: customers = [],
         isLoading: isCustomersLoading,
         isError: isCustomersError,
-    } = useQuery({
-        queryKey: ["customers"],
-        queryFn: customersApi.getAll,
-    });
+    } = useCustomersQuery();
     const {
         data: packs = [],
         isLoading: isPackagesLoading,
         isError: isPackagesError,
-    } = useQuery({
-        queryKey: ["packages"],
-        queryFn: packagesApi.getAll,
-    });
+    } = usePackagesQuery();
     const {
         data: filteredTransactions = [],
         isLoading: isTransactionsLoading,
         isError: isTransactionsError,
         isFetching: isTransactionsFetching,
-    } = useQuery({
-        queryKey: ["transactions", startDate, endDate, status],
-        queryFn: () => transactionsApi.getAll({ startDate, endDate, status }),
-    });
+    } = useTransactionsQuery({ startDate, endDate, status });
 
     const packageById = useMemo(
         () => new Map(packs.map((pack) => [pack.id, pack])),

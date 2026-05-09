@@ -16,10 +16,9 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import { useRef } from "react";
-import { packagesApi } from "../../internet-packages/api/packages.api";
 import type { InternetPackage } from "../../internet-packages/types/package.types";
+import { usePackagesQuery } from "../../../shared/hooks";
 import { formatCurrency } from "../../../shared/utils";
 
 const sliderButtonSx = {
@@ -41,10 +40,7 @@ export function PackageSection() {
         data: packages = [],
         isLoading,
         isError,
-    } = useQuery({
-        queryKey: ["packages"],
-        queryFn: packagesApi.getAll,
-    });
+    } = usePackagesQuery();
     const scrollPackages = (direction: "left" | "right") => {
         sliderRef.current?.scrollBy({
             left: direction === "left" ? -430 : 430,
