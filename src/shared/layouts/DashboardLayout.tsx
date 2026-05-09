@@ -3,9 +3,9 @@ import {
     HistoryRounded,
     LogoutRounded,
     MenuRounded,
+    PeopleRounded,
     ReceiptLongRounded,
     SearchRounded,
-    SupportAgentRounded,
     WifiRounded,
 } from "@mui/icons-material";
 import {
@@ -24,13 +24,23 @@ import {
     Toolbar,
     Typography,
 } from "@mui/material";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+    Outlet,
+    useLocation,
+    useNavigate,
+    useSearchParams,
+} from "react-router-dom";
 import { useAuthStore } from "../../features/auth/store/auth.store";
 
 export function DashboardLayout() {
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchParams] = useSearchParams();
     const { user, logout } = useAuthStore();
+    const packageSearch =
+        location.pathname === "/dashboard/beli-paket"
+            ? searchParams.get("search") ?? ""
+            : "";
     const menuItems = [
         { label: "Dashboard", icon: <DashboardRounded />, path: "/dashboard" },
         {
@@ -41,6 +51,15 @@ export function DashboardLayout() {
                     ? "/dashboard/admin/beli-paket"
                     : "/dashboard/beli-paket",
         },
+        ...(user?.role === "admin"
+            ? [
+                  {
+                      label: "Customer",
+                      icon: <PeopleRounded />,
+                      path: "/dashboard/admin/customer",
+                  },
+              ]
+            : []),
         {
             label: "Transaksi",
             icon: <ReceiptLongRounded />,
@@ -129,37 +148,49 @@ export function DashboardLayout() {
                                 net
                             </Typography>
                         </Box>
-                        <TextField
-                            placeholder="Cari paket internet, invoice, atau nomor pelanggan"
-                            size="small"
-                            sx={{
-                                flex: 1,
-                                maxWidth: 760,
-                                "& .MuiInputBase-root": {
-                                    color: "#fff",
-                                    bgcolor: "rgba(255,255,255,0.12)",
-                                    borderRadius: 1,
-                                },
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: "rgba(255,255,255,0.1)",
-                                },
-                                "& .MuiInputBase-input::placeholder": {
-                                    color: "rgba(255,255,255,0.72)",
-                                    opacity: 1,
-                                },
-                            }}
-                            slotProps={{
-                                input: {
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SearchRounded
-                                                sx={{ color: "#b9d6e7" }}
-                                            />
-                                        </InputAdornment>
-                                    ),
-                                },
-                            }}
-                        />
+                        {user?.role !== "admin" && (
+                            <TextField
+                                placeholder="Cari paket internet"
+                                value={packageSearch}
+                                onChange={(event) => {
+                                    const keyword = event.target.value;
+
+                                    navigate(
+                                        keyword.trim()
+                                            ? `/dashboard/beli-paket?search=${encodeURIComponent(keyword)}`
+                                            : "/dashboard/beli-paket",
+                                    );
+                                }}
+                                size="small"
+                                sx={{
+                                    flex: 1,
+                                    maxWidth: 760,
+                                    "& .MuiInputBase-root": {
+                                        color: "#fff",
+                                        bgcolor: "rgba(255,255,255,0.12)",
+                                        borderRadius: 1,
+                                    },
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "rgba(255,255,255,0.1)",
+                                    },
+                                    "& .MuiInputBase-input::placeholder": {
+                                        color: "rgba(255,255,255,0.72)",
+                                        opacity: 1,
+                                    },
+                                }}
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <SearchRounded
+                                                    sx={{ color: "#b9d6e7" }}
+                                                />
+                                            </InputAdornment>
+                                        ),
+                                    },
+                                }}
+                            />
+                        )}
                         <Avatar sx={{ bgcolor: "#006bb6", fontWeight: 800 }}>
                             {user?.name?.charAt(0) ?? "U"}
                         </Avatar>
@@ -272,25 +303,6 @@ export function DashboardLayout() {
                     <Outlet />
                 </Box>
             </Container>
-
-            <Button
-                variant="contained"
-                startIcon={<SupportAgentRounded />}
-                sx={{
-                    position: "fixed",
-                    right: 22,
-                    bottom: 22,
-                    bgcolor: "#f6c400",
-                    color: "#102331",
-                    textTransform: "none",
-                    fontWeight: 900,
-                    borderRadius: 999,
-                    boxShadow: "0 12px 26px rgba(0,0,0,0.25)",
-                    "&:hover": { bgcolor: "#e5b600" },
-                }}
-            >
-                Customer Service
-            </Button>
         </Box>
     );
 }

@@ -38,6 +38,22 @@
       "password": "customer123",
       "role": "customer",
       "customerId": "c-1778297305892"
+    },
+    {
+      "id": "wXjFO4nh_Hs",
+      "name": "Donald Trump",
+      "email": "trump@mail.com",
+      "password": "plokijuh",
+      "role": "customer",
+      "customerId": "c-1778318202074"
+    },
+    {
+      "id": "rhktqcdafr0",
+      "name": "Raito",
+      "email": "raito@mail.com",
+      "password": "12345678",
+      "role": "customer",
+      "customerId": "c-1778322253069"
     }
   ],
   "customers": [
@@ -94,6 +110,14 @@
       "name": "kujadi hunter",
       "phone": "9990009999",
       "email": "kujadi@mail.com",
+      "segment": "Silver",
+      "status": "active"
+    },
+    {
+      "id": "OYQwB57dhNc",
+      "name": "Raito",
+      "phone": "96452315567",
+      "email": "raito@mail.com",
       "segment": "Silver",
       "status": "active"
     }
@@ -288,7 +312,7 @@
       "customerId": "c-001",
       "packageId": "p-002",
       "paymentMethod": "QRIS",
-      "status": "pending",
+      "status": "success",
       "createdAt": "2026-05-09T06:53:40.562Z"
     },
     {
@@ -338,6 +362,38 @@
       "paymentMethod": "QRIS",
       "status": "pending",
       "createdAt": "2026-05-09T07:28:07.314Z"
+    },
+    {
+      "id": "EWCijb9W2MM",
+      "customerId": "c-1778318202074",
+      "packageId": "p-004",
+      "paymentMethod": "QRIS",
+      "status": "success",
+      "createdAt": "2026-05-09T09:17:50.943Z"
+    },
+    {
+      "id": "YEbZ7SIgsZY",
+      "customerId": "c-1778322253069",
+      "packageId": "p-002",
+      "paymentMethod": "QRIS",
+      "status": "pending",
+      "createdAt": "2026-05-09T10:24:38.252Z"
+    },
+    {
+      "id": "2Jgk8313quQ",
+      "customerId": "c-1778322253069",
+      "packageId": "p-001",
+      "paymentMethod": "QRIS",
+      "status": "pending",
+      "createdAt": "2026-05-09T10:34:59.391Z"
+    },
+    {
+      "id": "BBzvopOVi8Q",
+      "customerId": "c-1778322253069",
+      "packageId": "p-005",
+      "paymentMethod": "QRIS",
+      "status": "pending",
+      "createdAt": "2026-05-09T10:50:32.195Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

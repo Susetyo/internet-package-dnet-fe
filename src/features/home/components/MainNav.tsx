@@ -85,9 +85,6 @@ export function MainNav() {
                         <Link href="#paket" color="inherit" underline="none">
                             Paket
                         </Link>
-                        <Link href="#promo" color="inherit" underline="none">
-                            Promo
-                        </Link>
                         <Link href="#bantuan" color="inherit" underline="none">
                             Bantuan
                         </Link>

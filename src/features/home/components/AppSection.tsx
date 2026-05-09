@@ -50,7 +50,7 @@ export function AppSection() {
                                 }}
                             >
                                 Section penutup mengikuti pola homepage ISP:
-                                promosi app, kanal bantuan, dan CTA untuk
+                                kanal bantuan, app pelanggan, dan CTA untuk
                                 pelanggan baru.
                             </Typography>
                         </Stack>

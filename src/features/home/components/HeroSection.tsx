@@ -1,9 +1,8 @@
 import {
     ArrowForwardRounded,
-    PlayArrowRounded,
     RouterRounded,
 } from "@mui/icons-material";
-import { Box, Button, Chip, Container, Grid, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Grid, Paper, Stack, Typography } from "@mui/material";
 
 export function HeroSection() {
     return (
@@ -16,15 +15,6 @@ export function HeroSection() {
                 >
                     <Grid size={{ xs: 12, md: 6 }}>
                         <Stack spacing={2.5}>
-                            <Chip
-                                label="Promo internet rumah unlimited"
-                                sx={{
-                                    alignSelf: "flex-start",
-                                    bgcolor: "rgba(0,169,232,0.12)",
-                                    color: "#006bb6",
-                                    fontWeight: 900,
-                                }}
-                            />
                             <Typography
                                 component="h1"
                                 sx={{
@@ -67,19 +57,6 @@ export function HeroSection() {
                                     }}
                                 >
                                     Pilih Paket
-                                </Button>
-                                <Button
-                                    size="large"
-                                    variant="outlined"
-                                    startIcon={<PlayArrowRounded />}
-                                    sx={{
-                                        borderColor: "#b9ddeb",
-                                        color: "#006bb6",
-                                        px: 3,
-                                        py: 1.35,
-                                    }}
-                                >
-                                    Lihat Promo
                                 </Button>
                             </Stack>
                         </Stack>

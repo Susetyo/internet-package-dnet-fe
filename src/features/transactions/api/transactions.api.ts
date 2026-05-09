@@ -66,22 +66,23 @@ export const transactionsApi = {
     })).data;
   },
   verifyManualPaymentCredentials: async (
-    customerId: string,
     credentials: ManualPaymentCredentials,
   ) => {
+    const normalizedEmail = credentials.username.trim().toLowerCase();
     const { data } = await api.get<User[]>('/users', {
       params: {
-        customerId,
+        email: normalizedEmail,
         password: credentials.password,
       },
     });
-    const normalizedUsername = credentials.username.trim().toLowerCase();
 
     return data.some((user) => {
       const email = user.email.trim().toLowerCase();
-      const name = user.name.trim().toLowerCase();
 
-      return email === normalizedUsername || name === normalizedUsername;
+      return (
+        user.role === 'customer' &&
+        email === normalizedEmail
+      );
     });
   },
 };

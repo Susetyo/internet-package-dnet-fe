@@ -24,11 +24,7 @@ export const register = async (payload: RegisterPayload) => {
 
   if (existingUsers[0]) throw new Error('Email sudah terdaftar');
 
-  const timestamp = Date.now();
-  const customerId = `c-${timestamp}`;
-
-  await api.post('/customers', {
-    id: customerId,
+  const { data: customer } = await api.post('/customers', {
     name: payload.name.trim(),
     phone: payload.phone.trim(),
     email: normalizedEmail,
@@ -37,12 +33,12 @@ export const register = async (payload: RegisterPayload) => {
   });
 
   const { data: user } = await api.post<User>('/users', {
-    id: String(timestamp),
+    id: String(Date.now()),
     name: payload.name.trim(),
     email: normalizedEmail,
     password: payload.password,
     role: 'customer',
-    customerId,
+    customerId: customer.id,
   });
 
   return user;

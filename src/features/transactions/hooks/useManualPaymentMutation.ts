@@ -31,7 +31,6 @@ export function useManualPaymentMutation({
 
             const isVerified =
                 await transactionsApi.verifyManualPaymentCredentials(
-                    customerId,
                     credentials,
                 );
 

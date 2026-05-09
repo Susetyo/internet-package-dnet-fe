@@ -9,7 +9,7 @@ import {
     Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../auth/store/auth.store";
 import { DashboardCard, EmptyPanel } from "../../../shared/components";
 import { usePackagesQuery } from "../../../shared/hooks";
@@ -47,8 +47,10 @@ const imageThemes = [
 
 export function BuyPackagePage() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const user = useAuthStore((state) => state.user);
     const customerId = user?.customerId;
+    const packageSearch = searchParams.get("search")?.trim().toLowerCase() ?? "";
     const redirectTimerRef = useRef<number | null>(null);
     const [selectedPackageId, setSelectedPackageId] = useState<string | null>(
         null,
@@ -68,6 +70,13 @@ export function BuyPackagePage() {
         }, undefined),
         [packs],
     );
+    const filteredPacks = useMemo(() => {
+        if (!packageSearch) return packs;
+
+        return packs.filter((pack) =>
+            pack.name.toLowerCase().includes(packageSearch),
+        );
+    }, [packageSearch, packs]);
 
     const buyPackageMutation = useBuyPackageMutation({
         customerId,
@@ -171,7 +180,11 @@ export function BuyPackagePage() {
                         </Box>
                     </Stack>
                     <Chip
-                        label={`${packs.length} paket`}
+                        label={
+                            packageSearch
+                                ? `${filteredPacks.length} dari ${packs.length} paket`
+                                : `${packs.length} paket`
+                        }
                         sx={{
                             bgcolor: "rgba(114,216,255,0.16)",
                             color: "#72d8ff",
@@ -196,7 +209,7 @@ export function BuyPackagePage() {
                 </DashboardCard>
             ) : (
                 <Grid container spacing={3}>
-                    {packs.map((pack, index) => {
+                    {filteredPacks.map((pack, index) => {
                         const accent = packageAccents[index % packageAccents.length];
                         const isPending = selectedPackageId === pack.id;
                         const isRecommended = recommendedPackage?.id === pack.id;
@@ -217,9 +230,15 @@ export function BuyPackagePage() {
                 </Grid>
             )}
 
-            {!isLoading && !packs.length && (
+            {!isLoading && !filteredPacks.length && (
                 <DashboardCard>
-                    <EmptyPanel message="Belum ada paket internet yang tersedia." />
+                    <EmptyPanel
+                        message={
+                            packageSearch
+                                ? "Paket internet tidak ditemukan."
+                                : "Belum ada paket internet yang tersedia."
+                        }
+                    />
                 </DashboardCard>
             )}
         </Stack>
