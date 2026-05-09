@@ -24,18 +24,19 @@ import {
     Toolbar,
     Typography,
 } from "@mui/material";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../features/auth/store/auth.store";
 
 const menuItems = [
-    { label: "Dashboard", icon: <DashboardRounded /> },
-    { label: "Beli Paket", icon: <WifiRounded /> },
-    { label: "Transaksi", icon: <ReceiptLongRounded /> },
-    { label: "Riwayat", icon: <HistoryRounded /> },
+    { label: "Dashboard", icon: <DashboardRounded />, path: "/dashboard" },
+    { label: "Beli Paket", icon: <WifiRounded />, path: "/dashboard/beli-paket" },
+    { label: "Transaksi", icon: <ReceiptLongRounded />, path: "/dashboard/transaksi" },
+    { label: "Riwayat", icon: <HistoryRounded />, path: "/dashboard" },
 ];
 
 export function DashboardLayout() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { user, logout } = useAuthStore();
 
     return (
@@ -184,10 +185,11 @@ export function DashboardLayout() {
                             Internet Portal
                         </Box>
                         <List disablePadding>
-                            {menuItems.map((item, index) => (
+                            {menuItems.map((item) => (
                                 <ListItemButton
                                     key={item.label}
-                                    selected={index === 0}
+                                    selected={location.pathname === item.path}
+                                    onClick={() => navigate(item.path)}
                                     sx={{
                                         mb: 0.75,
                                         borderRadius: 1,

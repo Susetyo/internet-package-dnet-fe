@@ -4,8 +4,6 @@ import {
     Button,
     Card,
     CardContent,
-    Checkbox,
-    FormControlLabel,
     Link,
     Stack,
     TextField,
@@ -14,28 +12,47 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { login } from "../api/auth.api";
+import { register } from "../api/auth.api";
 import { useAuthStore } from "../store/auth.store";
-import type { LoginPayload } from "../types/auth.types";
+import type { RegisterPayload } from "../types/auth.types";
 import { LoginIllustration } from "./LoginIllustration";
 
-export function LoginForm() {
+type RegisterFormValues = RegisterPayload & {
+    confirmPassword: string;
+};
+
+export function RegisterForm() {
     const navigate = useNavigate();
     const setUser = useAuthStore((state) => state.setUser);
-    const { control, handleSubmit } = useForm<LoginPayload>({
-        defaultValues: { email: "admin@mail.com", password: "admin123" },
+    const { control, handleSubmit } = useForm<RegisterFormValues>({
+        defaultValues: {
+            name: "",
+            email: "",
+            phone: "",
+            password: "",
+            confirmPassword: "",
+        },
         mode: "onBlur",
     });
 
     const mutation = useMutation({
-        mutationFn: login,
+        mutationFn: register,
         onSuccess: (user) => {
             setUser(user);
             navigate("/dashboard");
         },
     });
 
-    const onSubmit = (values: LoginPayload) => mutation.mutate(values);
+    const onSubmit = (values: RegisterFormValues) => {
+        const payload: RegisterPayload = {
+            name: values.name,
+            email: values.email,
+            phone: values.phone,
+            password: values.password,
+        };
+
+        mutation.mutate(payload);
+    };
 
     return (
         <Card
@@ -79,18 +96,18 @@ export function LoginForm() {
                     }}
                 >
                     <Stack
-                        spacing={2.25}
+                        spacing={2}
                         component="form"
                         onSubmit={handleSubmit(onSubmit)}
                         noValidate
-                        sx={{ maxWidth: 340, mx: { xs: "auto", md: 0 } }}
+                        sx={{ maxWidth: 360, mx: { xs: "auto", md: 0 } }}
                     >
                         <Stack
                             direction="row"
                             spacing={0.75}
                             sx={{
                                 alignItems: "center",
-                                mb: { xs: 4, md: 6 },
+                                mb: { xs: 3, md: 4 },
                             }}
                         >
                             <Box
@@ -119,16 +136,16 @@ export function LoginForm() {
                                 component="h1"
                                 sx={{
                                     color: "#fff",
-                                    fontSize: { xs: 36, sm: 42 },
+                                    fontSize: { xs: 34, sm: 40 },
                                     fontWeight: 800,
                                     lineHeight: 1.05,
                                     letterSpacing: 0,
                                     m: 0,
                                 }}
                             >
-                                Halo,
+                                Buat Akun
                                 <br />
-                                Selamat Datang
+                                Baru
                             </Typography>
                             <Typography
                                 sx={{
@@ -138,8 +155,8 @@ export function LoginForm() {
                                     lineHeight: 1.6,
                                 }}
                             >
-                                Masuk ke akun untuk melanjutkan pengelolaan
-                                customer, paket internet, dan transaksi.
+                                Daftar sebagai customer untuk melihat paket,
+                                transaksi, dan status layanan internet.
                             </Typography>
                         </Box>
 
@@ -148,6 +165,22 @@ export function LoginForm() {
                                 {(mutation.error as Error).message}
                             </Alert>
                         )}
+
+                        <Controller
+                            name="name"
+                            control={control}
+                            rules={{ required: "Nama wajib diisi" }}
+                            render={({ field, fieldState }) => (
+                                <TextField
+                                    {...field}
+                                    placeholder="Nama lengkap"
+                                    fullWidth
+                                    error={!!fieldState.error}
+                                    helperText={fieldState.error?.message}
+                                    sx={fieldSx}
+                                />
+                            )}
+                        />
 
                         <Controller
                             name="email"
@@ -162,8 +195,24 @@ export function LoginForm() {
                             render={({ field, fieldState }) => (
                                 <TextField
                                     {...field}
-                                    placeholder="stanley@gmail.com"
+                                    placeholder="email@contoh.com"
                                     type="email"
+                                    fullWidth
+                                    error={!!fieldState.error}
+                                    helperText={fieldState.error?.message}
+                                    sx={fieldSx}
+                                />
+                            )}
+                        />
+
+                        <Controller
+                            name="phone"
+                            control={control}
+                            rules={{ required: "Nomor telepon wajib diisi" }}
+                            render={({ field, fieldState }) => (
+                                <TextField
+                                    {...field}
+                                    placeholder="Nomor telepon"
                                     fullWidth
                                     error={!!fieldState.error}
                                     helperText={fieldState.error?.message}
@@ -195,51 +244,27 @@ export function LoginForm() {
                             )}
                         />
 
-                        <Stack
-                            direction="row"
-                            sx={{
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                mt: -0.5,
+                        <Controller
+                            name="confirmPassword"
+                            control={control}
+                            rules={{
+                                required: "Konfirmasi kata sandi wajib diisi",
+                                validate: (value, formValues) =>
+                                    value === formValues.password ||
+                                    "Konfirmasi kata sandi tidak sama",
                             }}
-                        >
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        defaultChecked
-                                        size="small"
-                                        sx={{
-                                            p: 0.25,
-                                            mr: 0.75,
-                                            color: "#f6c400",
-                                            "&.Mui-checked": {
-                                                color: "#f6c400",
-                                            },
-                                        }}
-                                    />
-                                }
-                                label="Ingat saya"
-                                sx={{
-                                    m: 0,
-                                    "& .MuiFormControlLabel-label": {
-                                        color: "rgba(255,255,255,0.68)",
-                                        fontSize: 12,
-                                    },
-                                }}
-                            />
-                            <Link
-                                component={RouterLink}
-                                to="/forgot-password"
-                                underline="none"
-                                sx={{
-                                    color: "#72d8ff",
-                                    fontSize: 12,
-                                    fontWeight: 500,
-                                }}
-                            >
-                                Lupa kata sandi?
-                            </Link>
-                        </Stack>
+                            render={({ field, fieldState }) => (
+                                <TextField
+                                    {...field}
+                                    placeholder="Konfirmasi kata sandi"
+                                    type="password"
+                                    fullWidth
+                                    error={!!fieldState.error}
+                                    helperText={fieldState.error?.message}
+                                    sx={fieldSx}
+                                />
+                            )}
+                        />
 
                         <Button
                             type="submit"
@@ -247,7 +272,7 @@ export function LoginForm() {
                             disabled={mutation.isPending}
                             sx={{
                                 alignSelf: "flex-start",
-                                mt: 4,
+                                mt: 2,
                                 minWidth: 112,
                                 height: 44,
                                 borderRadius: 1.25,
@@ -260,24 +285,24 @@ export function LoginForm() {
                                 "&:hover": { bgcolor: "#e5b600" },
                             }}
                         >
-                            Masuk
+                            Daftar
                         </Button>
 
                         <Typography
                             sx={{
-                                mt: { xs: 5, md: 9 },
+                                mt: { xs: 3, md: 5 },
                                 color: "rgba(255,255,255,0.68)",
                                 fontSize: 12,
                             }}
                         >
-                            Belum punya akun?{" "}
+                            Sudah punya akun?{" "}
                             <Link
                                 component={RouterLink}
-                                to="/signup"
+                                to="/login"
                                 underline="none"
                                 sx={{ color: "#72d8ff", fontWeight: 800 }}
                             >
-                                Daftar
+                                Masuk
                             </Link>
                         </Typography>
                     </Stack>

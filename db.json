@@ -10,7 +10,7 @@
     {
       "id": "2",
       "email": "susetya@mail.com",
-      "password": "customer123",
+      "password": "plokijuh",
       "name": "Susetya Pambudi",
       "role": "customer",
       "customerId": "c-001"
@@ -30,6 +30,14 @@
       "name": "Andy Pranata",
       "role": "customer",
       "customerId": "c-003"
+    },
+    {
+      "id": "8tAd7ZE0w1Q",
+      "name": "kujadi hunter",
+      "email": "kujadi@mail.com",
+      "password": "customer123",
+      "role": "customer",
+      "customerId": "c-1778297305892"
     }
   ],
   "customers": [
@@ -79,6 +87,14 @@
       "phone": "021-9090-8833",
       "email": "finance@nusantaradigital.id",
       "segment": "Platinum",
+      "status": "active"
+    },
+    {
+      "id": "gyt2hotspCo",
+      "name": "kujadi hunter",
+      "phone": "9990009999",
+      "email": "kujadi@mail.com",
+      "segment": "Silver",
       "status": "active"
     }
   ],
@@ -212,6 +228,39 @@
       "paymentMethod": "E-Wallet",
       "status": "failed",
       "createdAt": "2026-04-28T12:12:00.000Z"
+    },
+    {
+      "id": "IBgsjx6xxtU",
+      "customerId": "c-001",
+      "packageId": "p-003",
+      "paymentMethod": "QRIS",
+      "status": "success",
+      "createdAt": "2026-05-09T04:09:16.930Z",
+      "package": {
+        "id": "p-003",
+        "name": "Data Booster 25 GB",
+        "quotaGb": 25,
+        "validityDays": 30,
+        "price": 55000,
+        "provider": "DNET Mobile"
+      }
+    },
+    {
+      "id": "MpCuwA1viy4",
+      "customerId": "c-001",
+      "packageId": "p-002",
+      "paymentMethod": "QRIS",
+      "status": "pending",
+      "createdAt": "2026-05-09T04:14:55.007Z"
+    },
+    {
+      "id": "tQ2kNFH3_rc",
+      "customerId": "c-001",
+      "packageId": "p-003",
+      "paymentMethod": "QRIS",
+      "status": "pending",
+      "createdAt": "2026-05-09T04:15:05.112Z"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

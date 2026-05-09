@@ -1,5 +1,10 @@
 import { api } from '../../../shared/api/axios-conf';
-import type { Transaction, TransactionStatus } from '../types/transaction.types';
+import type { User } from '../../auth/types/auth.types';
+import type {
+  ManualPaymentCredentials,
+  Transaction,
+  TransactionStatus,
+} from '../types/transaction.types';
 
 type TransactionFilters = {
   startDate?: string;
@@ -24,4 +29,29 @@ export const transactionsApi = {
     return (await api.get<Transaction[]>(`/transactions${query ? `?${query}` : ''}`)).data;
   },
   create: async (payload: Transaction) => (await api.post<Transaction>('/transactions', payload)).data,
+  updateStatus: async (transaction: Transaction, status: TransactionStatus) => {
+    return (await api.put<Transaction>(`/transactions/${transaction.id}`, {
+      ...transaction,
+      status,
+    })).data;
+  },
+  verifyManualPaymentCredentials: async (
+    customerId: string,
+    credentials: ManualPaymentCredentials,
+  ) => {
+    const { data } = await api.get<User[]>('/users', {
+      params: {
+        customerId,
+        password: credentials.password,
+      },
+    });
+    const normalizedUsername = credentials.username.trim().toLowerCase();
+
+    return data.some((user) => {
+      const email = user.email.trim().toLowerCase();
+      const name = user.name.trim().toLowerCase();
+
+      return email === normalizedUsername || name === normalizedUsername;
+    });
+  },
 };

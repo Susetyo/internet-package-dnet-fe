@@ -8,3 +8,15 @@ export type User = {
 };
 
 export type LoginPayload = { email: string; password: string };
+
+export type RegisterPayload = {
+    name: string;
+    email: string;
+    phone: string;
+    password: string;
+};
+
+export type ForgotPasswordPayload = {
+    email: string;
+    password: string;
+};
