@@ -250,16 +250,48 @@
       "customerId": "c-001",
       "packageId": "p-002",
       "paymentMethod": "QRIS",
-      "status": "pending",
-      "createdAt": "2026-05-09T04:14:55.007Z"
+      "status": "success",
+      "createdAt": "2026-05-09T04:14:55.007Z",
+      "package": {
+        "id": "p-002",
+        "name": "Home Fiber 50 Mbps",
+        "quotaGb": 0,
+        "validityDays": 30,
+        "price": 349000,
+        "provider": "DNET Fiber"
+      }
     },
     {
       "id": "tQ2kNFH3_rc",
       "customerId": "c-001",
       "packageId": "p-003",
       "paymentMethod": "QRIS",
+      "status": "success",
+      "createdAt": "2026-05-09T04:15:05.112Z",
+      "package": {
+        "id": "p-003",
+        "name": "Data Booster 25 GB",
+        "quotaGb": 25,
+        "validityDays": 30,
+        "price": 55000,
+        "provider": "DNET Mobile"
+      }
+    },
+    {
+      "id": "grOFNOok-ko",
+      "customerId": "c-001",
+      "packageId": "p-002",
+      "paymentMethod": "QRIS",
       "status": "pending",
-      "createdAt": "2026-05-09T04:15:05.112Z"
+      "createdAt": "2026-05-09T06:53:40.562Z"
+    },
+    {
+      "id": "W-qu945UVBI",
+      "customerId": "c-001",
+      "packageId": "p-006",
+      "paymentMethod": "QRIS",
+      "status": "pending",
+      "createdAt": "2026-05-09T06:53:44.606Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -11,6 +11,7 @@ type TransactionFilters = {
   endDate?: string;
   status?: TransactionStatus | 'all';
   customerId?: string;
+  packageId?: string;
 };
 
 const toStartIso = (date: string) => new Date(`${date}T00:00:00.000Z`).toISOString();
@@ -24,6 +25,7 @@ export const transactionsApi = {
     if (filters.endDate) params.set('createdAt_lte', toEndIso(filters.endDate));
     if (filters.status && filters.status !== 'all') params.set('status', filters.status);
     if (filters.customerId) params.set('customerId', filters.customerId);
+    if (filters.packageId && filters.packageId !== 'all') params.set('packageId', filters.packageId);
 
     const query = params.toString();
     return (await api.get<Transaction[]>(`/transactions${query ? `?${query}` : ''}`)).data;

@@ -31,7 +31,7 @@ const menuItems = [
     { label: "Dashboard", icon: <DashboardRounded />, path: "/dashboard" },
     { label: "Beli Paket", icon: <WifiRounded />, path: "/dashboard/beli-paket" },
     { label: "Transaksi", icon: <ReceiptLongRounded />, path: "/dashboard/transaksi" },
-    { label: "Riwayat", icon: <HistoryRounded />, path: "/dashboard" },
+    { label: "Riwayat", icon: <HistoryRounded />, path: "/dashboard/riwayat" },
 ];
 
 export function DashboardLayout() {

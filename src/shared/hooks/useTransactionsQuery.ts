@@ -7,6 +7,7 @@ export type TransactionFilters = {
     endDate?: string;
     status?: TransactionStatus | "all";
     customerId?: string;
+    packageId?: string;
 };
 
 export const transactionsQueryKey = ["transactions"] as const;
@@ -19,6 +20,7 @@ export function useTransactionsQuery(filters: TransactionFilters = {}) {
             filters.startDate,
             filters.endDate,
             filters.status,
+            filters.packageId,
         ],
         queryFn: () => transactionsApi.getAll(filters),
         enabled: filters.customerId === undefined || Boolean(filters.customerId),

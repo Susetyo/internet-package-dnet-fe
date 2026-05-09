@@ -5,6 +5,7 @@ import { DashboardLayout } from "../../shared/layouts/DashboardLayout";
 import { ForgotPasswordPage } from "../../features/auth/pages/ForgotPasswordPage";
 import { LoginPage } from "../../features/auth/pages/LoginPage";
 import { RegisterPage } from "../../features/auth/pages/RegisterPage";
+import { HistoryTransactionsPage } from "../../features/history-transactions/pages";
 import { BuyPackagePage } from "../../features/internet-packages/pages";
 import { CustomerTransactionsPage } from "../../features/transactions/pages";
 import { DashboardRouter } from "../../pages/DashboardRouter";
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
                     { path: "/dashboard", element: <DashboardRouter /> },
                     { path: "/dashboard/beli-paket", element: <BuyPackagePage /> },
                     { path: "/dashboard/transaksi", element: <CustomerTransactionsPage /> },
+                    { path: "/dashboard/riwayat", element: <HistoryTransactionsPage /> },
                 ],
             },
         ],
