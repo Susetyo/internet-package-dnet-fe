@@ -7,11 +7,20 @@ import type {
 } from '../types/auth.types';
 
 export const login = async (payload: LoginPayload) => {
-  const { data } = await api.get<User[]>(`/users?email=${payload.email}&password=${payload.password}`);
+  const normalizedEmail = payload.email.trim().toLowerCase();
+  const { data } = await api.get<User[]>(
+    `/users?email=${encodeURIComponent(normalizedEmail)}`,
+  );
 
-  if (!data[0]) throw new Error('Email atau password salah');
+  const authenticatedUser = data.find(
+    (user) =>
+      user.email.trim().toLowerCase() === normalizedEmail &&
+      user.password === payload.password,
+  );
 
-  const { ...user } = data[0];
+  if (!authenticatedUser) throw new Error('Email atau password salah');
+
+  const { ...user } = authenticatedUser;
 
   return user as User;
 };

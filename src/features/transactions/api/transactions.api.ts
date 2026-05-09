@@ -72,7 +72,6 @@ export const transactionsApi = {
     const { data } = await api.get<User[]>('/users', {
       params: {
         email: normalizedEmail,
-        password: credentials.password,
       },
     });
 
@@ -81,7 +80,8 @@ export const transactionsApi = {
 
       return (
         user.role === 'customer' &&
-        email === normalizedEmail
+        email === normalizedEmail &&
+        user.password === credentials.password
       );
     });
   },
