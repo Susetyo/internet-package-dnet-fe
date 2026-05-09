@@ -10,11 +10,17 @@ export function useHistoryTransactionFilters(): UseHistoryTransactionFiltersRetu
     const [startDate, setStartDate] = useState(defaultRange.start);
     const [endDate, setEndDate] = useState(defaultRange.end);
     const [status, setStatus] = useState<HistoryTransactionStatusFilter>("all");
+    const [customerId, setCustomerId] = useState("all");
     const [packageId, setPackageId] = useState("all");
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const resetPage = () => setPage(0);
+
+    const updateCustomerId = (nextCustomerId: string) => {
+        setCustomerId(nextCustomerId);
+        resetPage();
+    };
 
     const updatePackageId = (nextPackageId: string) => {
         setPackageId(nextPackageId);
@@ -45,12 +51,14 @@ export function useHistoryTransactionFilters(): UseHistoryTransactionFiltersRetu
         setStartDate(defaultRange.start);
         setEndDate(defaultRange.end);
         setStatus("all");
+        setCustomerId("all");
         setPackageId("all");
         resetPage();
     };
 
     return {
         filters: {
+            customerId,
             startDate,
             endDate,
             status,
@@ -62,6 +70,7 @@ export function useHistoryTransactionFilters(): UseHistoryTransactionFiltersRetu
         },
         actions: {
             setPage,
+            updateCustomerId,
             updateEndDate,
             updatePackageId,
             updateRowsPerPage,

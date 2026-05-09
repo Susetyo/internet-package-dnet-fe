@@ -16,6 +16,18 @@ type TransactionFilters = {
 
 const toStartIso = (date: string) => new Date(`${date}T00:00:00.000Z`).toISOString();
 const toEndIso = (date: string) => new Date(`${date}T23:59:59.999Z`).toISOString();
+const toTransactionPayload = (transaction: Transaction): Transaction => ({
+  id: transaction.id,
+  customerId: transaction.customerId,
+  packageId: transaction.packageId,
+  paymentMethod: transaction.paymentMethod,
+  status: transaction.status,
+  createdAt: transaction.createdAt,
+  ...(transaction.paidAt ? { paidAt: transaction.paidAt } : {}),
+  ...(transaction.manualPaymentProof
+    ? { manualPaymentProof: transaction.manualPaymentProof }
+    : {}),
+});
 
 export const transactionsApi = {
   getAll: async (filters: TransactionFilters = {}) => {
@@ -33,8 +45,24 @@ export const transactionsApi = {
   create: async (payload: Transaction) => (await api.post<Transaction>('/transactions', payload)).data,
   updateStatus: async (transaction: Transaction, status: TransactionStatus) => {
     return (await api.put<Transaction>(`/transactions/${transaction.id}`, {
-      ...transaction,
+      ...toTransactionPayload(transaction),
       status,
+    })).data;
+  },
+  confirmManualPayment: async (
+    transaction: Transaction,
+    proof: { fileName: string; imageUrl: string },
+  ) => {
+    const now = new Date().toISOString();
+
+    return (await api.put<Transaction>(`/transactions/${transaction.id}`, {
+      ...toTransactionPayload(transaction),
+      status: 'success',
+      paidAt: now,
+      manualPaymentProof: {
+        ...proof,
+        uploadedAt: now,
+      },
     })).data;
   },
   verifyManualPaymentCredentials: async (

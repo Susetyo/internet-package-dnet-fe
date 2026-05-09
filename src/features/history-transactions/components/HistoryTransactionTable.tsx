@@ -1,9 +1,4 @@
-import {
-    CheckCircleRounded,
-    ErrorRounded,
-    HistoryRounded,
-    PendingActionsRounded,
-} from "@mui/icons-material";
+import { HistoryRounded } from "@mui/icons-material";
 import {
     Box,
     Chip,
@@ -18,46 +13,23 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
-import type { ReactElement } from "react";
-import { DashboardCard, EmptyPanel } from "../../../shared/components";
-import { formatCurrency, formatDate } from "../../../shared/utils";
-import type { TransactionStatus } from "../../transactions/types/transaction.types";
+import {
+    DashboardCard,
+    EmptyPanel,
+    TransactionStatusChip,
+} from "../../../shared/components";
+import { formatCurrency, formatDate, sectionTitleSx } from "../../../shared/utils";
 import type { HistoryTransactionTableProps } from "../types";
-
-const statusLabels: Record<TransactionStatus, string> = {
-    pending: "Menunggu",
-    success: "Sukses",
-    failed: "Gagal",
-};
-
-const statusColors: Record<
-    TransactionStatus,
-    { bg: string; fg: string; icon: ReactElement }
-> = {
-    pending: {
-        bg: "rgba(246,196,0,0.16)",
-        fg: "#f6d84f",
-        icon: <PendingActionsRounded fontSize="small" />,
-    },
-    success: {
-        bg: "rgba(140,198,63,0.16)",
-        fg: "#b7f477",
-        icon: <CheckCircleRounded fontSize="small" />,
-    },
-    failed: {
-        bg: "rgba(255,95,134,0.16)",
-        fg: "#ff9db3",
-        icon: <ErrorRounded fontSize="small" />,
-    },
-};
 
 export function HistoryTransactionTable({
     transactions,
+    customerById,
     packageById,
     totalSuccessSpend,
     isLoading,
     page,
     rowsPerPage,
+    title = "Daftar Transaksi Saya",
     onPageChange,
     onRowsPerPageChange,
 }: HistoryTransactionTableProps) {
@@ -93,7 +65,7 @@ export function HistoryTransactionTable({
                     </Box>
                     <Box>
                         <Typography sx={sectionTitleSx}>
-                            Daftar Transaksi Saya
+                            {title}
                         </Typography>
                         <Typography sx={{ color: "rgba(255,255,255,0.62)" }}>
                             Total transaksi sukses: {formatCurrency(totalSuccessSpend)}
@@ -128,6 +100,7 @@ export function HistoryTransactionTable({
                             <TableRow>
                                 {[
                                     "ID Transaksi",
+                                    ...(customerById ? ["Customer"] : []),
                                     "Paket",
                                     "Provider",
                                     "Harga",
@@ -144,13 +117,37 @@ export function HistoryTransactionTable({
                         <TableBody>
                             {paginatedTransactions.map((transaction) => {
                                 const pack = packageById.get(transaction.packageId);
-                                const colors = statusColors[transaction.status];
+                                const customer = customerById?.get(
+                                    transaction.customerId,
+                                );
 
                                 return (
                                     <TableRow key={transaction.id}>
                                         <TableCell sx={tableCellSx}>
                                             {transaction.id}
                                         </TableCell>
+                                        {customerById && (
+                                            <TableCell sx={tableCellSx}>
+                                                <Typography
+                                                    sx={{
+                                                        fontWeight: 900,
+                                                        fontSize: 14,
+                                                    }}
+                                                >
+                                                    {customer?.name ??
+                                                        "Customer tidak ditemukan"}
+                                                </Typography>
+                                                <Typography
+                                                    sx={{
+                                                        color: "rgba(255,255,255,0.56)",
+                                                        fontSize: 12,
+                                                    }}
+                                                >
+                                                    {customer?.email ??
+                                                        transaction.customerId}
+                                                </Typography>
+                                            </TableCell>
+                                        )}
                                         <TableCell sx={tableCellSx}>
                                             <Typography
                                                 sx={{ fontWeight: 900, fontSize: 14 }}
@@ -179,18 +176,9 @@ export function HistoryTransactionTable({
                                             {formatDate(transaction.createdAt)}
                                         </TableCell>
                                         <TableCell sx={tableCellSx}>
-                                            <Chip
-                                                icon={colors.icon}
-                                                label={statusLabels[transaction.status]}
-                                                size="small"
-                                                sx={{
-                                                    bgcolor: colors.bg,
-                                                    color: colors.fg,
-                                                    fontWeight: 900,
-                                                    "& .MuiChip-icon": {
-                                                        color: colors.fg,
-                                                    },
-                                                }}
+                                            <TransactionStatusChip
+                                                showIcon
+                                                status={transaction.status}
                                             />
                                         </TableCell>
                                     </TableRow>
@@ -221,13 +209,6 @@ export function HistoryTransactionTable({
         </DashboardCard>
     );
 }
-
-const sectionTitleSx = {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: 900,
-    letterSpacing: 0,
-};
 
 const tableHeadSx = {
     color: "rgba(255,255,255,0.72)",

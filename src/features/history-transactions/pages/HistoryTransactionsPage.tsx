@@ -1,6 +1,10 @@
 import { Alert, Box, Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
-import { usePackagesQuery, useTransactionsQuery } from "../../../shared/hooks";
+import {
+    useCustomersQuery,
+    usePackagesQuery,
+    useTransactionsQuery,
+} from "../../../shared/hooks";
 import { useAuthStore } from "../../auth/store/auth.store";
 import {
     HistoryTransactionFilters,
@@ -8,11 +12,23 @@ import {
 } from "../components";
 import { useHistoryTransactionFilters } from "../hooks";
 
-export function HistoryTransactionsPage() {
+type HistoryTransactionsPageProps = {
+    adminOnly?: boolean;
+};
+
+export function HistoryTransactionsPage({
+    adminOnly = false,
+}: HistoryTransactionsPageProps) {
     const user = useAuthStore((state) => state.user);
-    const customerId = user?.customerId;
+    const isAdminHistory = adminOnly || user?.role === "admin";
+    const customerId = isAdminHistory ? undefined : user?.customerId;
     const { filters, pagination, actions } = useHistoryTransactionFilters();
 
+    const {
+        data: customers = [],
+        isLoading: isCustomersLoading,
+        isError: isCustomersError,
+    } = useCustomersQuery();
     const {
         data: packages = [],
         isLoading: isPackagesLoading,
@@ -24,10 +40,15 @@ export function HistoryTransactionsPage() {
         isError: isTransactionsError,
         isFetching: isTransactionsFetching,
     } = useTransactionsQuery({
-        customerId,
         ...filters,
+        customerId:
+            filters.customerId !== "all" ? filters.customerId : customerId,
     });
 
+    const customerById = useMemo(
+        () => new Map(customers.map((customer) => [customer.id, customer])),
+        [customers],
+    );
     const packageById = useMemo(
         () => new Map(packages.map((pack) => [pack.id, pack])),
         [packages],
@@ -49,10 +70,20 @@ export function HistoryTransactionsPage() {
         return total + (packageById.get(transaction.packageId)?.price ?? 0);
     }, 0);
 
-    const isLoading = isPackagesLoading || isTransactionsLoading;
-    const hasError = isPackagesError || isTransactionsError;
+    const isLoading =
+        isPackagesLoading || isTransactionsLoading || isCustomersLoading;
+    const hasError = isPackagesError || isTransactionsError || isCustomersError;
 
-    if (!customerId) {
+    if (adminOnly && user?.role !== "admin") {
+        return (
+            <Alert severity="error">
+                Halaman riwayat transaksi admin hanya bisa diakses oleh role
+                admin.
+            </Alert>
+        );
+    }
+
+    if (!isAdminHistory && !customerId) {
         return (
             <Alert severity="error">
                 Akun customer belum memiliki `customerId`. Hubungi admin untuk
@@ -81,21 +112,28 @@ export function HistoryTransactionsPage() {
                         m: 0,
                     }}
                 >
-                    Riwayat Transaksi
+                    {isAdminHistory
+                        ? "Riwayat Transaksi Customer"
+                        : "Riwayat Transaksi"}
                 </Typography>
                 <Typography sx={{ color: "rgba(255,255,255,0.7)", mt: 0.5 }}>
-                    Semua transaksi dari customer yang sedang login, lengkap
-                    dengan filter paket, tanggal, dan status.
+                    {isAdminHistory
+                        ? "Semua transaksi customer, lengkap dengan filter tanggal, customer, status, dan pagination."
+                        : "Semua transaksi dari customer yang sedang login, lengkap dengan filter paket, tanggal, dan status."}
                 </Typography>
             </Box>
 
             <HistoryTransactionFilters
+                customers={customers}
                 packages={packages}
+                customerId={filters.customerId}
                 packageId={filters.packageId}
                 startDate={filters.startDate}
                 endDate={filters.endDate}
                 status={filters.status}
+                showCustomerFilter={isAdminHistory}
                 isResetDisabled={isTransactionsFetching}
+                onCustomerIdChange={actions.updateCustomerId}
                 onPackageIdChange={actions.updatePackageId}
                 onStartDateChange={actions.updateStartDate}
                 onEndDateChange={actions.updateEndDate}
@@ -105,9 +143,15 @@ export function HistoryTransactionsPage() {
 
             <HistoryTransactionTable
                 transactions={sortedTransactions}
+                customerById={isAdminHistory ? customerById : undefined}
                 packageById={packageById}
                 totalSuccessSpend={totalSuccessSpend}
                 isLoading={isLoading}
+                title={
+                    isAdminHistory
+                        ? "Daftar Transaksi Customer"
+                        : "Daftar Transaksi Saya"
+                }
                 page={pagination.page}
                 rowsPerPage={pagination.rowsPerPage}
                 onPageChange={actions.setPage}

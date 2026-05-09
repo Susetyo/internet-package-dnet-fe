@@ -10,6 +10,12 @@ export type Transaction = {
     paymentMethod: PaymentMethod;
     status: TransactionStatus;
     createdAt: string;
+    manualPaymentProof?: {
+        fileName: string;
+        imageUrl: string;
+        uploadedAt: string;
+    };
+    paidAt?: string;
 };
 
 export type PendingCustomerTransaction = Transaction & {

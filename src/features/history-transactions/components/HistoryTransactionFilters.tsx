@@ -14,12 +14,16 @@ import type {
 } from "../types";
 
 export function HistoryTransactionFilters({
+    customers,
     packages,
+    customerId,
     packageId,
     startDate,
     endDate,
     status,
+    showCustomerFilter = false,
     isResetDisabled,
+    onCustomerIdChange,
     onPackageIdChange,
     onStartDateChange,
     onEndDateChange,
@@ -39,7 +43,9 @@ export function HistoryTransactionFilters({
                         <Typography sx={sectionTitleSx}>Filter Riwayat</Typography>
                     </Stack>
                     <Typography sx={{ color: "rgba(255,255,255,0.62)" }}>
-                        Filter hanya membaca transaksi milik akun customer ini.
+                        {showCustomerFilter
+                            ? "Filter membaca semua transaksi customer."
+                            : "Filter hanya membaca transaksi milik akun customer ini."}
                     </Typography>
                 </Box>
                 <Box
@@ -48,12 +54,33 @@ export function HistoryTransactionFilters({
                         gridTemplateColumns: {
                             xs: "1fr",
                             sm: "repeat(2, minmax(160px, 1fr))",
-                            lg: "minmax(220px, 1.2fr) repeat(3, minmax(160px, 1fr)) auto",
+                            lg: showCustomerFilter
+                                ? "minmax(240px, 1.35fr) minmax(200px, 1fr) repeat(3, minmax(150px, 1fr)) auto"
+                                : "minmax(220px, 1.2fr) repeat(3, minmax(160px, 1fr)) auto",
                         },
                         alignItems: "end",
                         gap: 1.5,
                     }}
                 >
+                    {showCustomerFilter && (
+                        <TextField
+                            label="Customer"
+                            select
+                            value={customerId}
+                            onChange={(event) =>
+                                onCustomerIdChange(event.target.value)
+                            }
+                            size="small"
+                            sx={filterFieldSx}
+                        >
+                            <MenuItem value="all">Semua Customer</MenuItem>
+                            {customers.map((customer) => (
+                                <MenuItem key={customer.id} value={customer.id}>
+                                    {customer.name} - {customer.email}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    )}
                     <TextField
                         label="Paket"
                         select

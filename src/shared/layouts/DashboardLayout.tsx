@@ -41,8 +41,23 @@ export function DashboardLayout() {
                     ? "/dashboard/admin/beli-paket"
                     : "/dashboard/beli-paket",
         },
-        { label: "Transaksi", icon: <ReceiptLongRounded />, path: "/dashboard/transaksi" },
-        { label: "Riwayat", icon: <HistoryRounded />, path: "/dashboard/riwayat" },
+        {
+            label: "Transaksi",
+            icon: <ReceiptLongRounded />,
+            path:
+                user?.role === "admin"
+                    ? "/dashboard/admin/transaksi"
+                    : "/dashboard/transaksi",
+        },
+        {
+            label:
+                user?.role === "admin" ? "Riwayat Customer" : "Riwayat",
+            icon: <HistoryRounded />,
+            path:
+                user?.role === "admin"
+                    ? "/dashboard/admin/riwayat"
+                    : "/dashboard/riwayat",
+        },
     ];
 
     return (

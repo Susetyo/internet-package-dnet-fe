@@ -1,4 +1,5 @@
 import type { InternetPackage } from "../../internet-packages/types/package.types";
+import type { Customer } from "../../customers/types/customer.types";
 import type {
     Transaction,
     TransactionStatus,
@@ -7,6 +8,7 @@ import type {
 export type HistoryTransactionStatusFilter = TransactionStatus | "all";
 
 export type HistoryTransactionFilterState = {
+    customerId: string;
     packageId: string;
     startDate: string;
     endDate: string;
@@ -20,6 +22,7 @@ export type HistoryTransactionPaginationState = {
 
 export type HistoryTransactionFilterActions = {
     setPage: (page: number) => void;
+    updateCustomerId: (customerId: string) => void;
     updatePackageId: (packageId: string) => void;
     updateStartDate: (startDate: string) => void;
     updateEndDate: (endDate: string) => void;
@@ -35,8 +38,11 @@ export type UseHistoryTransactionFiltersReturn = {
 };
 
 export type HistoryTransactionFiltersProps = HistoryTransactionFilterState & {
+    customers: Customer[];
     packages: InternetPackage[];
+    showCustomerFilter?: boolean;
     isResetDisabled: boolean;
+    onCustomerIdChange: (customerId: string) => void;
     onPackageIdChange: (packageId: string) => void;
     onStartDateChange: (startDate: string) => void;
     onEndDateChange: (endDate: string) => void;
@@ -46,9 +52,11 @@ export type HistoryTransactionFiltersProps = HistoryTransactionFilterState & {
 
 export type HistoryTransactionTableProps = HistoryTransactionPaginationState & {
     transactions: Transaction[];
+    customerById?: Map<string, Customer>;
     packageById: Map<string, InternetPackage>;
     totalSuccessSpend: number;
     isLoading: boolean;
+    title?: string;
     onPageChange: (page: number) => void;
     onRowsPerPageChange: (rowsPerPage: number) => void;
 };

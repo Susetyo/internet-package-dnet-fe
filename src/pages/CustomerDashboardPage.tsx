@@ -3,10 +3,8 @@ import {
     ArrowForwardRounded,
     CheckCircleRounded,
     ErrorRounded,
-    FilterAltRounded,
     PendingActionsRounded,
     ReceiptLongRounded,
-    RestartAltRounded,
     ShoppingCartRounded,
     WifiRounded,
 } from "@mui/icons-material";
@@ -17,7 +15,6 @@ import {
     Chip,
     CircularProgress,
     Grid,
-    MenuItem,
     Stack,
     Table,
     TableBody,
@@ -25,51 +22,41 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TextField,
     Typography,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../features/auth/store/auth.store";
-import type { TransactionStatus } from "../features/transactions/types/transaction.types";
 import {
     DashboardCard,
     EmptyPanel,
     MetricCard,
     PackageRow,
     StatusProgress,
+    TransactionFilters,
+    TransactionStatusChip,
 } from "../shared/components";
-import {
-    formatCurrency,
-    formatDate,
-    getDefaultDateRange,
-} from "../shared/utils";
+import { formatCurrency, formatDate, sectionTitleSx } from "../shared/utils";
 import {
     useCustomerQuery,
     usePackagesQuery,
+    useTransactionFilters,
     useTransactionsQuery,
 } from "../shared/hooks";
-
-const statusLabels: Record<TransactionStatus, string> = {
-    pending: "Menunggu",
-    success: "Sukses",
-    failed: "Gagal",
-};
-
-const statusColors: Record<TransactionStatus, { bg: string; fg: string }> = {
-    pending: { bg: "rgba(246,196,0,0.16)", fg: "#f6d84f" },
-    success: { bg: "rgba(140,198,63,0.16)", fg: "#b7f477" },
-    failed: { bg: "rgba(255,95,134,0.16)", fg: "#ff9db3" },
-};
 
 export function CustomerDashboardPage() {
     const navigate = useNavigate();
     const user = useAuthStore((state) => state.user);
     const customerId = user?.customerId;
-    const [defaultRange] = useState(getDefaultDateRange);
-    const [startDate, setStartDate] = useState(defaultRange.start);
-    const [endDate, setEndDate] = useState(defaultRange.end);
-    const [status, setStatus] = useState<TransactionStatus | "all">("all");
+    const {
+        endDate,
+        resetFilters,
+        setEndDate,
+        setStartDate,
+        setStatus,
+        startDate,
+        status,
+    } = useTransactionFilters();
 
     const {
         data: customer,
@@ -177,92 +164,18 @@ export function CustomerDashboardPage() {
             </Box>
 
             <DashboardCard>
-                <Stack
-                    direction={{ xs: "column", lg: "row" }}
-                    sx={{
-                        alignItems: { xs: "stretch", lg: "end" },
-                        gap: 2,
-                        justifyContent: "space-between",
-                    }}
-                >
-                    <Box>
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            sx={{ alignItems: "center", mb: 0.75 }}
-                        >
-                            <FilterAltRounded sx={{ color: "#f6c400" }} />
-                            <Typography sx={sectionTitleSx}>
-                                Filter Transaksi Saya
-                            </Typography>
-                        </Stack>
-                        <Typography sx={{ color: "rgba(255,255,255,0.62)" }}>
-                            Filter hanya berlaku untuk transaksi yang terhubung
-                            ke akun customer ini.
-                        </Typography>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: "grid",
-                            gridTemplateColumns: {
-                                xs: "1fr",
-                                sm: "repeat(2, minmax(160px, 1fr))",
-                                lg: "180px 180px 170px auto",
-                            },
-                            gap: 1.5,
-                        }}
-                    >
-                        <TextField
-                            label="Tanggal Mulai"
-                            type="date"
-                            value={startDate}
-                            onChange={(event) => setStartDate(event.target.value)}
-                            size="small"
-                            sx={filterFieldSx}
-                            slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                            label="Tanggal Akhir"
-                            type="date"
-                            value={endDate}
-                            onChange={(event) => setEndDate(event.target.value)}
-                            size="small"
-                            sx={filterFieldSx}
-                            slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                            label="Status"
-                            select
-                            value={status}
-                            onChange={(event) =>
-                                setStatus(event.target.value as TransactionStatus | "all")
-                            }
-                            size="small"
-                            sx={filterFieldSx}
-                        >
-                            <MenuItem value="all">Semua Status</MenuItem>
-                            <MenuItem value="pending">Menunggu</MenuItem>
-                            <MenuItem value="success">Sukses</MenuItem>
-                            <MenuItem value="failed">Gagal</MenuItem>
-                        </TextField>
-                        <Button
-                            startIcon={<RestartAltRounded />}
-                            disabled={isTransactionsFetching}
-                            onClick={() => {
-                                setStartDate(defaultRange.start);
-                                setEndDate(defaultRange.end);
-                                setStatus("all");
-                            }}
-                            sx={{
-                                color: "#72d8ff",
-                                fontWeight: 900,
-                                textTransform: "none",
-                            }}
-                        >
-                            Reset
-                        </Button>
-                    </Box>
-                </Stack>
+                <TransactionFilters
+                    title="Filter Transaksi Saya"
+                    description="Filter hanya berlaku untuk transaksi yang terhubung ke akun customer ini."
+                    startDate={startDate}
+                    endDate={endDate}
+                    status={status}
+                    isResetDisabled={isTransactionsFetching}
+                    onStartDateChange={setStartDate}
+                    onEndDateChange={setEndDate}
+                    onStatusChange={setStatus}
+                    onReset={resetFilters}
+                />
             </DashboardCard>
 
             {isLoading && (
@@ -461,7 +374,6 @@ export function CustomerDashboardPage() {
                         <TableBody>
                             {latestTransactions.map((tx) => {
                                 const pack = packageById.get(tx.packageId);
-                                const colors = statusColors[tx.status];
 
                                 return (
                                     <TableRow key={tx.id}>
@@ -479,14 +391,8 @@ export function CustomerDashboardPage() {
                                             {formatDate(tx.createdAt)}
                                         </TableCell>
                                         <TableCell sx={tableCellSx}>
-                                            <Chip
-                                                label={statusLabels[tx.status]}
-                                                size="small"
-                                                sx={{
-                                                    bgcolor: colors.bg,
-                                                    color: colors.fg,
-                                                    fontWeight: 900,
-                                                }}
+                                            <TransactionStatusChip
+                                                status={tx.status}
                                             />
                                         </TableCell>
                                     </TableRow>
@@ -502,41 +408,6 @@ export function CustomerDashboardPage() {
         </Stack>
     );
 }
-
-const sectionTitleSx = {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: 900,
-    letterSpacing: 0,
-};
-
-const filterFieldSx = {
-    minWidth: 0,
-    "& .MuiInputBase-root": {
-        color: "#fff",
-        bgcolor: "rgba(255,255,255,0.08)",
-        borderRadius: 1,
-        fontSize: 14,
-    },
-    "& .MuiInputLabel-root": {
-        color: "rgba(255,255,255,0.62)",
-    },
-    "& .MuiInputLabel-root.Mui-focused": {
-        color: "#72d8ff",
-    },
-    "& .MuiOutlinedInput-notchedOutline": {
-        borderColor: "rgba(255,255,255,0.14)",
-    },
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-        borderColor: "rgba(114,216,255,0.5)",
-    },
-    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-        borderColor: "#72d8ff",
-    },
-    "& .MuiSvgIcon-root": {
-        color: "rgba(255,255,255,0.7)",
-    },
-};
 
 const tableHeadSx = {
     color: "rgba(255,255,255,0.72)",
