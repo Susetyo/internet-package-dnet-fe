@@ -27,17 +27,23 @@ import {
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../features/auth/store/auth.store";
 
-const menuItems = [
-    { label: "Dashboard", icon: <DashboardRounded />, path: "/dashboard" },
-    { label: "Beli Paket", icon: <WifiRounded />, path: "/dashboard/beli-paket" },
-    { label: "Transaksi", icon: <ReceiptLongRounded />, path: "/dashboard/transaksi" },
-    { label: "Riwayat", icon: <HistoryRounded />, path: "/dashboard/riwayat" },
-];
-
 export function DashboardLayout() {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useAuthStore();
+    const menuItems = [
+        { label: "Dashboard", icon: <DashboardRounded />, path: "/dashboard" },
+        {
+            label: user?.role === "admin" ? "Beli Paket Admin" : "Beli Paket",
+            icon: <WifiRounded />,
+            path:
+                user?.role === "admin"
+                    ? "/dashboard/admin/beli-paket"
+                    : "/dashboard/beli-paket",
+        },
+        { label: "Transaksi", icon: <ReceiptLongRounded />, path: "/dashboard/transaksi" },
+        { label: "Riwayat", icon: <HistoryRounded />, path: "/dashboard/riwayat" },
+    ];
 
     return (
         <Box

@@ -6,7 +6,7 @@ import { ForgotPasswordPage } from "../../features/auth/pages/ForgotPasswordPage
 import { LoginPage } from "../../features/auth/pages/LoginPage";
 import { RegisterPage } from "../../features/auth/pages/RegisterPage";
 import { HistoryTransactionsPage } from "../../features/history-transactions/pages";
-import { BuyPackagePage } from "../../features/internet-packages/pages";
+import { AdminBuyPackagePage, BuyPackagePage } from "../../features/internet-packages/pages";
 import { CustomerTransactionsPage } from "../../features/transactions/pages";
 import { DashboardRouter } from "../../pages/DashboardRouter";
 import { HomePage } from "../../pages/HomePage";
@@ -29,6 +29,7 @@ export const router = createBrowserRouter([
                 children: [
                     { path: "/dashboard", element: <DashboardRouter /> },
                     { path: "/dashboard/beli-paket", element: <BuyPackagePage /> },
+                    { path: "/dashboard/admin/beli-paket", element: <AdminBuyPackagePage /> },
                     { path: "/dashboard/transaksi", element: <CustomerTransactionsPage /> },
                     { path: "/dashboard/riwayat", element: <HistoryTransactionsPage /> },
                 ],
